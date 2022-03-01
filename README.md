@@ -48,7 +48,7 @@ ____
 
 ## Extend FluentBit
 
-### Access Docker API to collect container metrics and ship as MetricBeat docker.metric, docker.cpu, docker.memory
+### Access Docker API
 
 https://docs.docker.com/engine/api/v1.41/
 
