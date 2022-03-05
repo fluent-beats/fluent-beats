@@ -11,13 +11,14 @@ services:
         - "8125:8125/udp"
     volumes:
         - ./config/fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+        - ./config/fluent-bit/pipelines:/fluent-bit/etc/
         - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - fluent
     environment:
         ELASTIC_SEARCH_HOST: test-3363464309.us-east-1.bonsaisearch.net
-        ELASTIC_SEARCH_USER: g2b6vkkbkg
-        ELASTIC_SEARCH_PWD: en4lwyobng
+        ELASTIC_SEARCH_USER: x
+        ELASTIC_SEARCH_PWD: x
         #ELASTIC_SEARCH_PWD: /run/secrets/secret_elastic_search_pwd
     # secrets:
     #   - secret_elastic_search_pwd
@@ -34,7 +35,7 @@ services:
       logging:
         driver: fluentd
         options:
-          fluentd-async: 'true'
+          #fluentd-async: 'true'
           tag: logs
 
   logger-b:
@@ -46,7 +47,7 @@ services:
       logging:
         driver: fluentd
         options:
-          fluentd-async: 'true'
+          #fluentd-async: 'true'
           tag: logs
 
 # secrets:
