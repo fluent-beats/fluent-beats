@@ -1,31 +1,25 @@
 version: '3.8'
 
 services:
-
   # global services (with port binding to host)
-
   fluent-bit:
-    image: fluent/fluent-bit:1.8
+    image: fluent-beats:latest
+    build: .
     ports:
         - "24224:24224/tcp"
         - "8125:8125/udp"
     volumes:
-        - ./config/fluent-bit/fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
-        - ./config/fluent-bit/pipelines:/fluent-bit/etc/
         - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       - fluent
     environment:
-        ELASTIC_SEARCH_HOST: test-3363464309.us-east-1.bonsaisearch.net
-        ELASTIC_SEARCH_USER: x
-        ELASTIC_SEARCH_PWD: x
-        #ELASTIC_SEARCH_PWD: /run/secrets/secret_elastic_search_pwd
-    # secrets:
-    #   - secret_elastic_search_pwd
-
+        ES_CLOUD_ID: /run/secrets/secret_es_cloud_id
+        ES_CLOUD_AUTH: /run/secrets/secret_es_cloud_auth
+    secrets:
+      - secret_es_cloud_id
+      - secret_es_cloud_auth
 
   # replica services (no port binding to host)
-
   logger-a:
       image: chentex/random-logger
       depends_on:
@@ -50,12 +44,12 @@ services:
           #fluentd-async: 'true'
           tag: logs
 
-# secrets:
-
-#    secret_elastic_search_pwd:
-#     file: ./config/es/password.txt
+secrets:
+   secret_es_cloud_id:
+    file: ./config/es/cloud_id.txt
+   secret_es_cloud_auth:
+    file: ./config/es/cloud_auth.txt
 
 networks:
-
   fluent:
     driver: bridge
