@@ -51,8 +51,9 @@ ____
 ### Access Docker API
 
 https://docs.docker.com/engine/api/v1.41/
+https://github.com/elastic/beats/tree/main/metricbeat/module/docker
 
-List all containers
+List all containers (used by Metricbeats to list all containers)
 ```sh
 curl --unix-socket /var/run/docker.sock http://localhost/containers/json
 ```

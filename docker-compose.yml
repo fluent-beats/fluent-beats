@@ -26,10 +26,14 @@ services:
         - fluent-bit
       networks:
         - fluent
+      labels:
+        flb_env: "prod"
+        flb_service: "logger-a"
       logging:
         driver: fluentd
         options:
           #fluentd-async: 'true'
+          labels-regex: "^flb_.*"
           tag: logs
 
   logger-b:
@@ -38,10 +42,15 @@ services:
         - fluent-bit
       networks:
         - fluent
+      labels:
+        flb_env: "prod"
+        flb_service: "logger-b"
+
       logging:
         driver: fluentd
         options:
           #fluentd-async: 'true'
+          labels-regex: "^flb_.*"
           tag: logs
 
 secrets:
