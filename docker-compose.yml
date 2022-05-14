@@ -13,11 +13,13 @@ services:
     networks:
       - fluent
     environment:
-        ES_CLOUD_ID: /run/secrets/secret_es_cloud_id
-        ES_CLOUD_AUTH: /run/secrets/secret_es_cloud_auth
+        ES_CLOUD_ID: /run/secrets/secret.service.ecs.cloud_id
+        ES_CLOUD_AUTH: /run/secrets/secret.service.ecs.cloud_auth
     secrets:
-      - secret_es_cloud_id
-      - secret_es_cloud_auth
+      - source: secret.service.ecs.cloud_id.v1
+        target: secret.service.ecs.cloud_id
+      - source: secret.service.ecs.cloud_auth.v1
+        target: secret.service.ecs.cloud_auth
 
   # replica services (no port binding to host)
   logger-a:
@@ -54,9 +56,9 @@ services:
           tag: logs
 
 secrets:
-   secret_es_cloud_id:
+   secret.service.ecs.cloud_id.v1:
     file: ./config/es/cloud_id.txt
-   secret_es_cloud_auth:
+   secret.service.ecs.cloud_auth.v1:
     file: ./config/es/cloud_auth.txt
 
 networks:

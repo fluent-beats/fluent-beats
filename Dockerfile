@@ -11,8 +11,5 @@ COPY            /config/fluent-bit/pipelines/metrics/*.* /fluent-bit/etc/
 # Config
 COPY            /config/fluent-bit/fluent-bit.conf /fluent-bit/etc/
 
-# Entrypoint
-COPY            /config/fluent-bit/entrypoint.sh /fluent-bit/entrypoint.sh
-
-#ENTRYPOINT     ["sh", "/fluent-bit/entrypoint.sh"]
+# Run
 CMD             ["/fluent-bit/bin/fluent-bit", "-c", "/fluent-bit/etc/fluent-bit.conf", "-e", "/fluent-bit/bin/flb-in_carbon.so"]
