@@ -13,8 +13,8 @@ services:
     networks:
       - fluent
     environment:
-        ES_CLOUD_ID: /run/secrets/secret.service.ecs.cloud_id
-        ES_CLOUD_AUTH: /run/secrets/secret.service.ecs.cloud_auth
+        ES_CLOUD_ID_SECRET: /run/secrets/secret.service.ecs.cloud_id
+        ES_CLOUD_AUTH_SECRET: /run/secrets/secret.service.ecs.cloud_auth
     secrets:
       - source: secret.service.ecs.cloud_id.v1
         target: secret.service.ecs.cloud_id
