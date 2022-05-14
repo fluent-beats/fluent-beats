@@ -1,0 +1,8 @@
+# Folders
+.git
+es
+
+# Files
+*.md
+docker-compose.yml
+Dockerfile
