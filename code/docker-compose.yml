@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  fluent-beats:
+    image: etriphany/fluent-beats:latest
+    build: .
+    ports:
+        - "24224:24224/tcp"
+        - "8125:8125/udp"
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+        ES_CLOUD_ID_SECRET: /run/secrets/secret.service.ecs.cloud_id
+        ES_CLOUD_AUTH_SECRET: /run/secrets/secret.service.ecs.cloud_auth
+    secrets:
+      - source: secret.service.ecs.cloud_id.v1
+        target: secret.service.ecs.cloud_id
+      - source: secret.service.ecs.cloud_auth.v1
+        target: secret.service.ecs.cloud_auth
+
+secrets:
+   secret.service.ecs.cloud_id.v1:
+    external: true
+   secret.service.ecs.cloud_auth.v1:
+    external: true

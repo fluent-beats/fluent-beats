@@ -1,74 +1,48 @@
-# Hacking Beats Index and Events
+# Description
+
+Observability service used to collect **logs**, **metrics** and **apm** from Docker / Docker Swarm using and ship them into [Elastic Cloud](https://www.elastic.co) using [FluentBit](https://fluentbit.io/) instead native [Elastic Beats](https://www.elastic.co/beats/).
+
+# Requirements
+
+* [Docker](www.docker.com)
+* [FluentBit Carbon Plugin](https://github.com/etriphany/fluent-bit-carbon)
+
+# Design
+
+This service is designed to provide ligthweight observability capababilities.
+
+Its deployed as a [Docker Swarm Global Service] (https://docs.docker.com/engine/swarm/services/#replicated-or-global-services) inside a Docker cluster in order to receive any type of observability information from other services.
+
+It uses 2 port bindings to work
+* 24224/tcp: Used to receive Logs from Docker Fluentd Driver
+* 8125/udp: Used to receive Metrics/APM using extended StatsD datagrams (StatsD  + Tags)
+
+Its able to handle 4 main workflows:
+
+## Logs
+
+Logs collection relies on features provided by [Docker Fluentd Driver](https://docs.docker.com/config/containers/logging/fluentd/) allowing containers to ship their logs to underline `host node`.
+
+The Docker Fluentd Driver can be configured to ship custom tags, so logs can be sharded into buckets just like Metrics.
 
 
-## MetricBeat
+## APM
 
-### Extract MetricBeat Index Template
+APM collection relies on extended StatsD datagrams.
 
-- Run MetricBeat container
-```sh
-docker run --rm -ti docker.elastic.co/beats/metricbeat:8.0.0
-```
+To support it the service uses a custom plugin [FluentBit Carbon Plugin](https://github.com/etriphany/fluent-bit-carbon), that can parse the extended datagram properly.
 
-- Export template manually
-```sh
-docker container exec -it CONTAINER_ID ./metricbeat export template > metricbeat.template.json
-```
+## Metrics
 
-- Import template manually
-```sh
-curl -XPUT -H 'Content-Type: application/json' http://localhost:9200/_index_template/metricbeat-8.0.1 -d@metricbeat.template.json
-```
+This service is able to collect metrics form all Docker container running in the same `host node`.
 
-### Understand MetricBeat Event Format
+To support it the service uses a custom plugin that access Docker Engine APi and collect stats about **CPU**, **Memory** and **Network**.
 
-> https://www.elastic.co/guide/en/beats/metricbeat/current/metricbeat-event-structure.html
-
-____
-
-## FileBeat
-
-- Run FileBeat container
-```sh
-docker run --rm -ti docker.elastic.co/beats/filebeat:8.0.0
-```
-
-- Export template manually
-```sh
-docker container exec -it CONTAINER_ID ./filebeat export template > filebeat.template.json
-```
-
-- Import template manually
-```sh
-curl -XPUT -H 'Content-Type: application/json' http://localhost:9200/_index_template/filebeat-8.0.1 -d@filebeat.template.json
-```
+## Health checks
 
 
-____
-
-## Extend FluentBit
-
-### Access Docker API
-
-https://docs.docker.com/engine/api/v1.41/
-https://github.com/elastic/beats/tree/main/metricbeat/module/docker
-
-List all containers (used by Metricbeats to list all containers)
-```sh
-curl --unix-socket /var/run/docker.sock http://localhost/containers/json
-```
-
-Get container info MetricBeat -> (docker.container, docker.health)
-```sh
-curl --unix-socket /var/run/docker.sock http://localhost//containers/(id or name)/json
-```
-
-Get container info MetricBeat -> (docker.cpu, docker.memory, docker.network)
-```sh
-curl --unix-socket /var/run/docker.sock http://localhost//containers/(id or name)/stats
-```
-
-System wide info MetricBeat -> (docker.info)
-```sh
-curl --unix-socket /var/run/docker.sock http://localhost//info
+## Testing Locally
+``` bash
+docker-compose -f docker-compose-test.yml up
+echo "click;env=prod;service=my-service:11|c|@0.1" | nc -w0 -q0 -u 127.0.0.1 8125
 ```

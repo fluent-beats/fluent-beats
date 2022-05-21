@@ -1,8 +1,10 @@
 # Folders
 .git
 es
+fluent-beats
 
 # Files
 *.md
 docker-compose.yml
+docker-compose-test.yml
 Dockerfile

@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # global services (with port binding to host)
   fluent-bit:
-    image: fluent-beats:latest
+    image: etriphany/fluent-beats:latest
     build: .
     ports:
         - "24224:24224/tcp"
@@ -57,9 +57,9 @@ services:
 
 secrets:
    secret.service.ecs.cloud_id.v1:
-    file: ./config/es/cloud_id.txt
+    file: ./es/cloud_id.txt
    secret.service.ecs.cloud_auth.v1:
-    file: ./config/es/cloud_auth.txt
+    file: ./es/cloud_auth.txt
 
 networks:
   fluent:
