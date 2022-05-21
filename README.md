@@ -11,7 +11,7 @@ Observability service used to collect **logs**, **metrics** and **apm** from Doc
 
 This service is designed to provide ligthweight observability capababilities.
 
-Its deployed as a [Docker Swarm Global Service] (https://docs.docker.com/engine/swarm/services/#replicated-or-global-services) inside a Docker cluster in order to receive any type of observability information from other services.
+Its deployed as a [Docker Swarm Global Service](https://docs.docker.com/engine/swarm/services/#replicated-or-global-services) inside a Docker cluster in order to receive any type of observability information from other services.
 
 It uses 2 port bindings to work
 * 24224/tcp: Used to receive Logs from Docker Fluentd Driver

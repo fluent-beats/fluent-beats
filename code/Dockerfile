@@ -1,4 +1,5 @@
-FROM            fluent/fluent-bit:1.8.4-debug
+# versions > "1.8.11" are huge!
+FROM            fluent/fluent-bit:1.8.11-debug
 
 # Config
 COPY            /fluent-beats/config/*.conf /fluent-bit/etc/
