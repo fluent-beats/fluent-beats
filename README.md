@@ -5,7 +5,7 @@ Observability service used to collect **logs**, **metrics** and **apm** from Doc
 # Requirements
 
 * [Docker](www.docker.com)
-* [FluentBit Carbon Plugin](https://github.com/etriphany/fluent-bit-carbon)
+* [FluentBit Carbon Plugin](https://github.com/fluent-beats/fluent-bit-carbon)
 
 # Design
 
@@ -30,7 +30,7 @@ The Docker Fluentd Driver can be configured to ship custom tags, so logs can be 
 
 APM collection relies on extended StatsD datagrams.
 
-To support it the service uses a custom plugin [FluentBit Carbon Plugin](https://github.com/etriphany/fluent-bit-carbon), that can parse the extended datagram properly.
+To support it the service uses a custom plugin [FluentBit Carbon Plugin](https://github.com/fluent-beats/fluent-bit-carbon), that can parse the extended datagram properly.
 
 ## Metrics
 

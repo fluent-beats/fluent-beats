@@ -3,7 +3,7 @@ version: '3.8'
 services:
   # global services (with port binding to host)
   fluent-bit:
-    image: etriphany/fluent-beats:latest
+    image: fluent-beats/fluent-beats:latest
     build: .
     ports:
         - "24224:24224/tcp"
