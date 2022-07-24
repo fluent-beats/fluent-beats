@@ -1,6 +1,6 @@
 -- Translates Carbon Metric to Elastic ECS
 
-MODULE_NAME = 'fluentbit'
+MODULE_NAME = 'fluent-beats'
 
 function add_event(input, output)
   output['event'] = {}
