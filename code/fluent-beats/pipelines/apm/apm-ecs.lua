@@ -1,6 +1,12 @@
 -- Translates Carbon Metric to Elastic ECS
 
 MODULE_NAME = 'fluent-beats'
+ECS_VERSION = "8.0.0"
+
+function add_ecs(input, output)
+  output['ecs'] = {}
+  output['ecs']['version'] = ECS_VERSION
+end
 
 function add_event(input, output)
   output['event'] = {}
@@ -8,6 +14,24 @@ function add_event(input, output)
   output['event']['module'] = MODULE_NAME
   -- Required for ML features
   output['event']['dataset'] = MODULE_NAME .. '.apm'
+end
+
+function add_agent(input, output)
+  output['agent'] = {}
+  output['agent']['name'] = MODULE_NAME
+  output['agent']['version'] = ECS_VERSION
+end
+
+function add_service(input, output)
+  output['service'] = {}
+  output['service']['name'] = output['labels']['service']
+end
+
+function add_container(input, output)
+  output['container'] = {}
+  -- output['container']['id'] = input['container_id']
+  -- output['container']['name'] = input['container_name']
+  output['container']['runtime'] = 'docker'
 end
 
 function add_labels(input, output)
@@ -21,40 +45,23 @@ function add_labels(input, output)
   end
 end
 
-function add_container(input, output)
-  output['container'] = {}
-  -- output['container']['id'] = input['container_id']
-  -- output['container']['name'] = input['container_name']
-  -- output['container']['ip_address'] = ip -4 -o address
-  output['container']['runtime'] = 'docker'
-end
-
-function add_stats(input, output)
-  output['stats'] = input
-end
-
-function ecs_event(input, output)
-  add_event(input, output)
-end
-
-function ecs_base(input, output)
-  add_labels(input, output)
-end
-
-function ecs_metric(input, output)
-  add_container(input, output)
-  add_stats(input, output)
+function add_statsd(input, output)
+  output['statsd'] = input
 end
 
 function carbon_to_ecs(tag, timestamp, record)
   new_record = {}
 
-  -- https://www.elastic.co/guide/en/ecs/current/index.html
-  ecs_event(record, new_record)
-  ecs_base(record, new_record)
+  -- https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html
+  add_ecs(record, new_record)
+  add_event(record, new_record)
+  add_labels(record, new_record)
+  add_agent(record, new_record)
+  add_service(record, new_record)
+  add_container(record, new_record)
 
   -- https://www.elastic.co/guide/en/observability/8.2/metrics-app-fields.html
-  ecs_metric(record, new_record)
+  add_statsd(record, new_record)
 
   return 1, timestamp, new_record
 end
