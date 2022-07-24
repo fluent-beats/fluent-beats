@@ -20,7 +20,7 @@ function add_container(input, output)
 end
 
 function add_metrics(input, output)
-  output['metrics'] = input
+  output['docker'] = input
 end
 
 function ecs_event(input, output)
