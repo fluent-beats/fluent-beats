@@ -1,6 +1,6 @@
 -- Translates Carbon Metric to Elastic ECS
 
-MODULE_NAME = 'fluent-beats'
+MODULE_NAME = 'statsd'
 ECS_VERSION = "8.0.0"
 
 function add_ecs(input, output)
@@ -8,18 +8,17 @@ function add_ecs(input, output)
   output['ecs']['version'] = ECS_VERSION
 end
 
-function add_event(input, output)
+function add_event(input, output, event)
   output['event'] = {}
   output['event']['kind'] = 'metric'
   output['event']['module'] = MODULE_NAME
   -- Required for ML features
-  output['event']['dataset'] = MODULE_NAME .. '.apm'
+  output['event']['dataset'] = MODULE_NAME .. '.' .. event
 end
 
-function add_agent(input, output)
-  output['agent'] = {}
-  output['agent']['name'] = MODULE_NAME
-  output['agent']['version'] = ECS_VERSION
+function add_metric_set(input, output, name)
+  output['metricset'] = {}
+  output['metricset']['name'] = name
 end
 
 function add_service(input, output)
@@ -54,9 +53,9 @@ function carbon_to_ecs(tag, timestamp, record)
 
   -- https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html
   add_ecs(record, new_record)
-  add_event(record, new_record)
+  add_event(record, new_record, 'apm')
+  add_metric_set(input, new_record, 'apm')
   add_labels(record, new_record)
-  add_agent(record, new_record)
   add_service(record, new_record)
   add_container(record, new_record)
 
