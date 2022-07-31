@@ -48,7 +48,13 @@ function cpu_stats(input)
   output = {}
 
   output['docker'] = {}
-  output['docker']['cpu'] = input['cpu_stats']
+  output['docker']['cpu'] = {}
+  output['docker']['cpu']['stats'] = input['cpu_stats']
+
+  if input['cpu_stats'] then
+    output['docker']['cpu']['usage'] = input['cpu_stats']['system_cpu_usage']
+  end
+
   add_common(input, output, 'cpu')
 
   return output
@@ -58,7 +64,14 @@ function memory_stats(input)
   output = {}
 
   output['docker'] = {}
-  output['docker']['memory'] = input['memory_stats']
+  output['docker']['memory'] = {}
+  output['docker']['memory']['stats'] = input['memory_stats']
+
+  -- https://www.datadoghq.com/blog/how-to-collect-docker-metrics/
+  if input['memory_stats'] then
+    output['docker']['memory']['usage'] = input['memory_stats']['usage']
+  end
+
   add_common(input, output, 'memory')
 
   return output
@@ -68,7 +81,25 @@ function disk_stats(input)
   output = {}
 
   output['docker'] = {}
-  output['docker']['disk'] = input['blkio_stats']
+  output['docker']['disk'] = {}
+  output['docker']['disk']['stats'] = input['blkio_stats']
+
+  -- https://www.datadoghq.com/blog/how-to-collect-docker-metrics/
+  output['docker']['disk']['read'] = {}
+  output['docker']['disk']['write'] = {}
+  output['docker']['disk']['read']['bytes'] = 0
+  output['docker']['disk']['write']['bytes'] = 0
+  if input['blkio_stats']['io_service_bytes_recursive'] then
+    for i,att in ipairs(input['blkio_stats']['io_service_bytes_recursive']) do
+      if att.op == 'Read' then
+        output['docker']['disk']['read']['bytes'] = att.value
+      end
+      if att.op == 'Write' then
+        output['docker']['disk']['write']['bytes'] = att.value
+      end
+    end
+  end
+
   add_common(input, output, 'disk')
 
   return output
@@ -78,7 +109,21 @@ function network_stats(input)
   output = {}
 
   output['docker'] = {}
-  output['docker']['network'] = input['networks']
+  output['docker']['network'] = {}
+  output['docker']['network']['stats'] = input['networks']
+
+  -- https://www.datadoghq.com/blog/how-to-collect-docker-metrics/
+  output['docker']['network']['ingress'] = {}
+  output['docker']['network']['egress'] = {}
+  output['docker']['network']['ingress']['bytes'] = 0
+  output['docker']['network']['egress']['bytes'] = 0
+  if input['networks'] then
+    for k,v in pairs(input['networks']) do
+      output['docker']['network']['ingress']['bytes'] = output['docker']['network']['ingress']['bytes'] + input['networks'][k]['rx_bytes']
+      output['docker']['network']['egress']['bytes'] = output['docker']['network']['egress']['bytes'] + input['networks'][k]['tx_bytes']
+    end
+  end
+
   add_common(input, output, 'network')
 
   return output
