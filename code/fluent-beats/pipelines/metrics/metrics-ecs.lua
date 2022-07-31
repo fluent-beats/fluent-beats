@@ -35,24 +35,28 @@ function add_container(input, output)
   output['container']['id'] = input['id']
   output['container']['name'] = input['name']
 
--- high level stats
 -- https://www.datadoghq.com/blog/how-to-collect-docker-metrics/
+
+-- cpu
   output['container']['cpu'] = {}
-  if not next(input['cpu_stats']) then
+  if input['cpu_stats'] then
     output['container']['cpu']['usage'] = input['cpu_stats']['system_cpu_usage']
   end
 
+  -- memory
   output['container']['memory'] = {}
-  if not next(input['memory_stats']) then
+  if input['memory_stats'] then
     output['container']['memory']['usage'] = input['memory_stats']['usage']
   end
 
+  -- disk
   output['container']['disk'] = {}
   output['container']['disk']['read'] = {}
   output['container']['disk']['write'] = {}
+  output['container']['disk']['read']['bytes'] = 0
+  output['container']['disk']['write']['bytes'] = 0
   if input['blkio_stats']['io_service_bytes_recursive'] then
     for i,att in ipairs(input['blkio_stats']['io_service_bytes_recursive']) do
-      print(att)
       if att.op == 'Read' then
         output['container']['disk']['read']['bytes'] = att.value
       end
@@ -62,11 +66,19 @@ function add_container(input, output)
     end
   end
 
+  -- network
   output['container']['network'] = {}
   output['container']['network']['ingress'] = {}
   output['container']['network']['egress'] = {}
-  --output['container']['network']['ingress']['bytes'] = input['networks']['eth0']['rx_bytes']
-  --output['container']['network']['egress']['bytes'] = input['networks']['eth0']['tx_bytes']
+  output['container']['network']['ingress']['bytes'] = 0
+  output['container']['network']['egress']['bytes'] = 0
+  if input['networks'] then
+    for k,v in pairs(input['networks']) do
+      print(k)
+      output['container']['network']['ingress']['bytes'] = output['container']['network']['ingress']['bytes'] + input['networks'][k]['rx_bytes']
+      output['container']['network']['egress']['bytes'] = output['container']['network']['egress']['bytes'] + input['networks'][k]['tx_bytes']
+    end
+  end
 end
 
 function add_metric_set(input, output)
@@ -78,11 +90,9 @@ function add_docker_stats(input, output)
   output['docker'] = {}
   output['docker']['memory'] = input['memory_stats']
   output['docker']['cpu'] = input['cpu_stats']
-  output['docker']['precpu'] = input['precpu_stats']
   output['docker']['storage'] = input['storage_stats']
-  output['docker']['blkio'] = input['blkio_stats']
-  output['docker']['networks'] = input['networks']
-  output['docker']['pids'] = input['pids_stats']
+  output['docker']['disk'] = input['blkio_stats']
+  output['docker']['network'] = input['networks']
 end
 
 function docker_stats_to_ecs(tag, timestamp, record)
@@ -97,7 +107,7 @@ function docker_stats_to_ecs(tag, timestamp, record)
   add_container(record, new_record)
 
   -- https://www.elastic.co/guide/en/observability/8.2/metrics-app-fields.html
-  add_docker_stats(record, new_record)
+   add_docker_stats(record, new_record)
 
   return 1, timestamp, new_record
 end
