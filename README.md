@@ -50,6 +50,34 @@ This service is able to collect metrics form all Docker container running in the
 To support it the service uses a custom plugin [FluentBit Docker Stats Plugin](https://github.com/fluent-beats/fluent-bit-docker-stats), that can
 access Docker Engine API and collect stats about **CPU**, **Memory** and **Network**.
 
+**Memory Stats**
+
+Memory stats are computed using same math used by `docker container stats` command, as follows:
+
+* `memory.usage` = **memory_stats.usage**
+* `memory.used` = **memory_stats.usage** - **memory_stats.stats.cache**
+* `memory.available` = **memory_stats.limit**
+* `memory.percent_usage` = (`memory.used`  / `memory.available`) * 100.0
+
+**CPU Stats**
+
+CPU stats are computed using same math used by `docker container stats` command, as follows:
+
+* `cpu.delta` = **cpu_stats.cpu_usage.total_usage** - **precpu_stats.cpu_usage.total_usage**
+* `cpu.system.delta` = **cpu_stats.system_cpu_usage** - **precpu_stats.system_cpu_usage**
+* `cpu.counter` = **cpu_stats.online_cpus**
+* `cpu.percent_usage` = (`cpu.delta` / `cpu.system.delta`) * `cpu.counter` * 100.0
+
+**Network Stats**
+
+* `network.ingress.bytes` = sum(**networks[*].rx_bytes**)
+* `network.egress.bytes` = sum(**networks[*].tx_bytes**)
+
+**Disk Stats**
+
+* `disk.read.bytes` = **blkio_stats.io_service_bytes_recursive[?(@.op=='Read')].value**
+* `disk.write.bytes` = **blkio_stats.io_service_bytes_recursive[?(@.op=='Read')].value**
+
 ### Health checks
 
 TODO

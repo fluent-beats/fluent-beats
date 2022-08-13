@@ -1,5 +1,9 @@
--- Translates Carbon Metric to Elastic ECS Event
+-- Translates Docker Metrics to Elastic ECS Event
 -- https://www.elastic.co/guide/en/observability/8.0/metrics-app-fields.html
+-- Disk and Network reference:
+--  https://www.datadoghq.com/blog/how-to-collect-docker-metrics/
+-- CPU and Memory reference:
+--  https://docs.docker.com/engine/api/v1.41/#tag/Container/operation/ContainerStats
 
 MODULE_NAME = 'docker'
 ECS_VERSION = "8.0.0"
@@ -49,11 +53,18 @@ function cpu_stats(input)
 
   output['docker'] = {}
   output['docker']['cpu'] = {}
-  output['docker']['cpu']['stats'] = input['cpu_stats']
 
   if input['cpu_stats'] then
+    output['docker']['cpu']['system'] = {}
     output['docker']['cpu']['usage'] = input['cpu_stats']['system_cpu_usage']
+    output['docker']['cpu']['delta'] = input['cpu_stats']['cpu_usage']['total_usage'] - input['precpu_stats']['cpu_usage']['total_usage']
+    output['docker']['cpu']['counter'] = input['cpu_stats']['online_cpus']
+    if input['cpu_stats']['system_cpu_usage'] then
+      output['docker']['cpu']['system']['delta'] = input['cpu_stats']['system_cpu_usage'] - input['precpu_stats']['system_cpu_usage']
+      output['docker']['cpu']['percent_usage'] =  (output['docker']['cpu']['delta'] / output['docker']['cpu']['system']['delta']) * output['docker']['cpu']['counter'] * 100.0
+    end
   end
+  --output['docker']['cpu']['stats'] = input['cpu_stats']
 
   add_common(input, output, 'cpu')
 
@@ -65,12 +76,16 @@ function memory_stats(input)
 
   output['docker'] = {}
   output['docker']['memory'] = {}
-  output['docker']['memory']['stats'] = input['memory_stats']
 
-  -- https://www.datadoghq.com/blog/how-to-collect-docker-metrics/
   if input['memory_stats'] then
     output['docker']['memory']['usage'] = input['memory_stats']['usage']
+    output['docker']['memory']['available'] = input['memory_stats']['limit']
+    if  input['memory_stats']['stats'] then
+      output['docker']['memory']['used'] = input['memory_stats']['usage'] - input['memory_stats']['stats']['cache']
+      output['docker']['memory']['percent_usage'] = (output['docker']['memory']['used'] / output['docker']['memory']['available']) * 100.0
+    end
   end
+  --output['docker']['memory']['stats'] = input['memory_stats']
 
   add_common(input, output, 'memory')
 
@@ -82,13 +97,11 @@ function disk_stats(input)
 
   output['docker'] = {}
   output['docker']['disk'] = {}
-  output['docker']['disk']['stats'] = input['blkio_stats']
-
-  -- https://www.datadoghq.com/blog/how-to-collect-docker-metrics/
   output['docker']['disk']['read'] = {}
   output['docker']['disk']['write'] = {}
   output['docker']['disk']['read']['bytes'] = 0
   output['docker']['disk']['write']['bytes'] = 0
+
   if input['blkio_stats']['io_service_bytes_recursive'] then
     for i,att in ipairs(input['blkio_stats']['io_service_bytes_recursive']) do
       if att.op == 'Read' then
@@ -99,6 +112,7 @@ function disk_stats(input)
       end
     end
   end
+  --output['docker']['disk']['stats'] = input['blkio_stats']
 
   add_common(input, output, 'disk')
 
@@ -110,9 +124,6 @@ function network_stats(input)
 
   output['docker'] = {}
   output['docker']['network'] = {}
-  output['docker']['network']['stats'] = input['networks']
-
-  -- https://www.datadoghq.com/blog/how-to-collect-docker-metrics/
   output['docker']['network']['ingress'] = {}
   output['docker']['network']['egress'] = {}
   output['docker']['network']['ingress']['bytes'] = 0
@@ -123,6 +134,7 @@ function network_stats(input)
       output['docker']['network']['egress']['bytes'] = output['docker']['network']['egress']['bytes'] + input['networks'][k]['tx_bytes']
     end
   end
+  -- output['docker']['network']['stats'] = input['networks']
 
   add_common(input, output, 'network')
 
