@@ -4,7 +4,7 @@ services:
   # global services (with port binding to host)
   fluent-bit:
     image: fluent-beats/fluent-beats:latest
-    build: .
+    build: ../.
     ports:
         - "24224:24224/tcp"
         - "8125:8125/udp"
@@ -23,15 +23,16 @@ services:
         target: secret.service.es.http_pwd
 
   # replica services (no port binding to host)
-  logger-a:
-      image: chentex/random-logger
+  service-a:
+      image: fluent-beats/fake-service
+      build: ./fake-service
       depends_on:
         - fluent-bit
       networks:
         - fluent
       labels:
         flb_env: "prod"
-        flb_service: "logger-a"
+        flb_service: "service-a"
       logging:
         driver: fluentd
         options:
@@ -39,16 +40,16 @@ services:
           labels-regex: "^flb_.*"
           tag: logs
 
-  logger-b:
-      image: chentex/random-logger
+  service-b:
+      image: fluent-beats/fake-service
+      build: ./fake-service
       depends_on:
         - fluent-bit
       networks:
         - fluent
       labels:
         flb_env: "prod"
-        flb_service: "logger-b"
-
+        flb_service: "service-b"
       logging:
         driver: fluentd
         options:
@@ -58,9 +59,9 @@ services:
 
 secrets:
    secret.service.es.http_host.v1:
-    file: ./es/http_host.txt
+    file: ./secrets/http_host.txt
    secret.service.es.http_pwd.v1:
-    file: ./es/http_pwd.txt
+    file: ./secrets/http_pwd.txt
 
 networks:
   fluent:
