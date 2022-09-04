@@ -45,21 +45,21 @@ end
 
 function delta_cpu_for(cpus_count, delta, cpu_delta)
   if delta <= 0 or cpu_delta == 0 then
-		return 0
+    return 0
   end
-	return (cpus_count * delta) / cpu_delta
+  return (cpus_count * delta) / cpu_delta
 end
 
 function cpu_usage_percent(input, field, cpus_count, cpu_delta)
-	delta = input['cpu_stats']['cpu_usage'][field] - input['precpu_stats']['cpu_usage'][field]
+  delta = input['cpu_stats']['cpu_usage'][field] - input['precpu_stats']['cpu_usage'][field]
 
   return delta_cpu_for(cpus_count, delta, cpu_delta)
 end
 
 function cpu_sys_percent(input, cpus_count, cpu_delta)
-	delta = input['cpu_stats']['system_cpu_usage'] - input['precpu_stats']['system_cpu_usage']
+  delta = input['cpu_stats']['system_cpu_usage'] - input['precpu_stats']['system_cpu_usage']
 
-	return delta_cpu_for(cpus_count, delta, cpu_delta)
+  return delta_cpu_for(cpus_count, delta, cpu_delta)
 end
 
 function cpu_stats(input)
