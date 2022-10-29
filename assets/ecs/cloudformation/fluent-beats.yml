@@ -1,0 +1,88 @@
+Description: >
+    Cloudformation template for a fluent-beats daemon running on ECS
+Parameters:
+    EnvironmentName:
+        Description: An environment name to be prefixed to resource names
+        Type: String
+    DockerImage:
+        Description: The service Docker image.
+        Type: String
+    Cluster:
+        Description: The ECS Cluster name that this service should run on
+        Type: String
+
+Resources:
+    Service:
+        Type: AWS::ECS::Service
+        Properties:
+            Cluster: !Ref Cluster
+            LaunchType: EC2
+            TaskDefinition: !Ref TaskDefinition
+            SchedulingStrategy: DAEMON
+
+    TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+            Family: fluent-beats-daemon
+            TaskRoleArn: !Ref TaskRole
+            NetworkMode: host
+            Volumes:
+                - Name: socket
+                  Host:
+                    SourcePath: /var/run
+                - Name: containers
+                  Host:
+                    SourcePath: /var/lib/docker/containers
+            ContainerDefinitions:
+                - Name: fluent-beats
+                  Essential: true
+                  MemoryReservation: 10
+                  Image: !Ref DockerImage
+                  MountPoints:
+                      - ContainerPath: /var/run
+                        SourceVolume: socket
+                      - ContainerPath: /var/lib/docker/containers
+                        SourceVolume: containers
+                  Secrets:
+                    - Name: ES_HTTP_HOST_SECRET
+                      ValueFrom: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:service-es:http_host::'
+                    - Name: ES_HTTP_PWD_SECRET
+                      ValueFrom: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:service-es:http_pwd::'
+                  PortMappings:
+                      - ContainerPort: 24224
+                        HostPort: 24224
+                        Protocol: tcp
+                      - ContainerPort: 8125
+                        HostPort: 8125
+                        Protocol: udp
+    TaskRole:
+        Type: AWS::IAM::Role
+        Properties:
+            RoleName: !Sub ecs-task-${AWS::StackName}
+            Path: /
+            AssumeRolePolicyDocument: |
+                {
+                    "Statement": [{
+                        "Sid": "",
+                        "Effect": "Allow",
+                        "Principal": { "Service": [ "ecs-tasks.amazonaws.com" ]},
+                        "Action": "sts:AssumeRole"
+                    }]
+                }
+            Policies:
+                - PolicyName: !Sub ecs-task-${AWS::StackName}
+                  PolicyDocument:
+                    {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                              "Effect": "Allow",
+                              "Action": [
+                                "secretsmanager:GetSecretValue",
+                              ],
+                              "Resource": [
+                                !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:service-es'
+                              ]
+                            }
+                        ]
+                    }

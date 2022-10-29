@@ -1,0 +1,38 @@
+Description: >
+    Cloudformation template for an obervable service running on ECS
+Parameters:
+    EnvironmentName:
+        Description: An environment name to be prefixed to resource names
+        Type: String
+    DockerImage:
+        Description: The service Docker image.
+        Type: String
+    Cluster:
+        Description: The ECS Cluster name that this service should run on
+        Type: String
+
+Resources:
+    Service:
+        Type: AWS::ECS::Service
+        Properties:
+            Cluster: !Ref Cluster
+            LaunchType: EC2
+            TaskDefinition: !Ref TaskDefinition
+
+    TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+            Family: fake-task
+            NetworkMode: bridge
+            TaskRoleArn: !Ref TaskRole
+            ContainerDefinitions:
+                - Name: fake-service
+                  Image: !Ref DockerImage
+                  DockerLabels:
+                    - flb_env: !Sub ${EnvironmentName}
+                    - flb_service: "service-a"
+                  LogConfiguration:
+                    LogDriver: fluentd
+                    Options:
+                        labels-regex: ^flb_.*
+                        tag: logs
