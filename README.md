@@ -1,10 +1,10 @@
 # Description
 
 <p align="center">
- <img src="https://raw.githubusercontent.com/fluent-beats/fluent-beats/master/docs/img/fluent-beats.png" height="399"/>
+ <img src="https://raw.githubusercontent.com/fluent-beats/fluent-beats/master/docs/img/fluent-beats.png" width="1082" height="399"/>
 </p>
 
-Observability service used to collect **logs**, **metrics**, **apm** and **heartbeats** from Docker containers and ship them into [Elastic Cloud](https://www.elastic.co) using [FluentBit](https://fluentbit.io/) instead native [Elastic Beats](https://www.elastic.co/beats/).
+Observability service used to collect **logs**, **metrics**, **apm** and **heartbeats** from Docker containers and ship them into [ElasticSearch](https://www.elastic.co) using [FluentBit](https://fluentbit.io/) instead native [Elastic Beats](https://www.elastic.co/beats/).
 
 # Requirements
 
