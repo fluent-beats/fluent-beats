@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   # global services (with port binding to host)
-  fluent-bit:
+  fluent-beats:
     image: fluent-beats/fluent-beats:latest
     build: ../.
     ports:
@@ -27,7 +27,7 @@ services:
       image: fluent-beats/fake-service
       build: ./fake-service
       depends_on:
-        - fluent-bit
+        - fluent-beats
       networks:
         - fluent
       labels:
@@ -44,7 +44,7 @@ services:
       image: fluent-beats/fake-service
       build: ./fake-service
       depends_on:
-        - fluent-bit
+        - fluent-beats
       networks:
         - fluent
       labels:
