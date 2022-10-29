@@ -12,7 +12,7 @@ function add_event(input, output, event)
   output['event'] = {}
   output['event']['kind'] = 'metric'
   output['event']['module'] = MODULE_NAME
-  -- Required for ML features
+  -- required for ML features
   output['event']['dataset'] = MODULE_NAME .. '.' .. event
 end
 
@@ -65,6 +65,7 @@ end
 function cpu_stats(input)
   output = {}
 
+  -- Beats fields
   output['docker'] = {}
   output['docker']['cpu'] = {}
 
@@ -122,7 +123,7 @@ function cpu_stats(input)
     end
   end
 
-  -- ECS
+  -- ECS fields
   output['container'] = {}
   output['container']['cpu'] = {}
   output['container']['cpu']['usage'] = output['docker']['cpu']['total']['norm']['pct']
@@ -134,6 +135,7 @@ end
 function memory_stats(input)
   output = {}
 
+  -- Beats fields
   output['docker'] = {}
   output['docker']['memory'] = {}
 
@@ -159,7 +161,7 @@ function memory_stats(input)
 
       -- rss
       output['docker']['memory']['rss'] = {}
-      output['docker']['memory']['rss']['max'] = input['memory_stats']['stats']['total_rss']
+      output['docker']['memory']['rss']['total'] = input['memory_stats']['stats']['total_rss']
       output['docker']['memory']['rss']['pct'] = input['memory_stats']['stats']['total_rss'] / input['memory_stats']['limit']
 
       -- like docker stats command
@@ -168,7 +170,7 @@ function memory_stats(input)
       output['docker']['memory']['stats']['percent_usage'] = (output['docker']['memory']['stats']['used'] / output['docker']['memory']['stats']['available']) * 100.0
     end
 
-    -- ECS
+    -- ECS fields
     output['container'] = {}
     output['container']['memory'] = {}
     output['container']['memory']['usage'] = output['docker']['memory']['usage']['pct']
@@ -182,35 +184,37 @@ end
 function disk_stats(input)
   output = {}
 
+  -- Beats fields
   output['docker'] = {}
-  output['docker']['disk'] = {}
-  output['docker']['disk']['read'] = {}
-  output['docker']['disk']['write'] = {}
-  output['docker']['disk']['read']['bytes'] = 0
-  output['docker']['disk']['write']['bytes'] = 0
+  output['docker']['diskio'] = {}
+  output['docker']['diskio']['read'] = {}
+  output['docker']['diskio']['write'] = {}
+  output['docker']['diskio']['read']['bytes'] = 0
+  output['docker']['diskio']['write']['bytes'] = 0
 
   --  https://www.datadoghq.com/blog/how-to-collect-docker-metrics/
   if input['blkio_stats']['io_service_bytes_recursive'] then
     for i,att in ipairs(input['blkio_stats']['io_service_bytes_recursive']) do
       -- read
       if att.op == 'Read' then
-        output['docker']['disk']['read']['bytes'] = att.value
+        output['docker']['diskio']['read']['bytes'] = output['docker']['diskio']['read']['bytes'] + att.value
       end
 
       --write
       if att.op == 'Write' then
-        output['docker']['disk']['write']['bytes'] = att.value
+        output['docker']['diskio']['write']['bytes'] = output['docker']['diskio']['write']['bytes'] + att.value
       end
     end
+    output['docker']['diskio']['total'] = output['docker']['diskio']['read']['bytes'] + output['docker']['diskio']['write']['bytes']
   end
 
-  -- ECS
+  -- ECS fields
   output['container'] = {}
   output['container']['disk'] = {}
   output['container']['disk']['read'] = {}
   output['container']['disk']['write'] = {}
-  output['container']['disk']['read']['bytes'] = output['docker']['disk']['read']['bytes']
-  output['container']['disk']['write']['bytes'] = output['docker']['disk']['write']['bytes']
+  output['container']['disk']['read']['bytes'] = output['docker']['diskio']['read']['bytes']
+  output['container']['disk']['write']['bytes'] = output['docker']['diskio']['write']['bytes']
   add_common(input, output, 'disk')
 
   return output
@@ -219,6 +223,7 @@ end
 function network_stats(input)
   output = {}
 
+  -- Beats fields
   output['docker'] = {}
   output['docker']['network'] = {}
   output['docker']['network']['in'] = {}
@@ -248,7 +253,7 @@ function network_stats(input)
     end
   end
 
-  -- ECS
+  -- ECS fields
   output['container'] = {}
   output['container']['network'] = {}
   output['container']['network']['egress'] = {}
@@ -263,11 +268,18 @@ end
 function docker_stats_to_ecs(tag, timestamp, record)
   -- split record in multiple records
   new_records = {}
+  code = 0
 
-  table.insert(new_records, cpu_stats(record))
-  table.insert(new_records, memory_stats(record))
-  table.insert(new_records, disk_stats(record))
-  table.insert(new_records, network_stats(record))
+  -- skip if container is not running
+  if record['pids_stats']['current'] then
+    table.insert(new_records, cpu_stats(record))
+    table.insert(new_records, memory_stats(record))
+    table.insert(new_records, disk_stats(record))
+    table.insert(new_records, network_stats(record))
+    code = 2
+  else
+    code = -1
+  end
 
-  return 2, timestamp, new_records
+  return code, timestamp, new_records
 end
