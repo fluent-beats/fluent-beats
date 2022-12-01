@@ -67,5 +67,5 @@ function fluentd_to_ecs(tag, timestamp, record)
   -- https://www.elastic.co/guide/en/observability/8.2/logs-app-fields.html
   add_message_log(record, new_record)
 
-  return 1, timestamp, new_record
+  return 2, timestamp, new_record
 end

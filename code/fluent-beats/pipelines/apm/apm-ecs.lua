@@ -69,5 +69,5 @@ function carbon_to_ecs(tag, timestamp, record)
   -- https://www.elastic.co/guide/en/observability/8.2/metrics-app-fields.html
   add_statsd(record, new_record)
 
-  return 1, timestamp, new_record
+  return 2, timestamp, new_record
 end
