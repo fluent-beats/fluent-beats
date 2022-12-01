@@ -59,7 +59,7 @@ function carbon_to_ecs(tag, timestamp, record)
 
   -- https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html
   add_ecs(record, new_record)
-  add_agent(input, output)
+  add_agent(input, new_record)
   add_event(record, new_record, 'apm')
   add_metric_set(input, new_record, 'apm')
   add_labels(record, new_record)
