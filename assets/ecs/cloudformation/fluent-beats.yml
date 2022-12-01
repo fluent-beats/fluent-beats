@@ -48,13 +48,6 @@ Resources:
                       ValueFrom: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:service-es:http_host::'
                     - Name: ES_HTTP_PWD_SECRET
                       ValueFrom: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:service-es:http_pwd::'
-                  PortMappings:
-                      - ContainerPort: 24224
-                        HostPort: 24224
-                        Protocol: tcp
-                      - ContainerPort: 8125
-                        HostPort: 8125
-                        Protocol: udp
     TaskRole:
         Type: AWS::IAM::Role
         Properties:
