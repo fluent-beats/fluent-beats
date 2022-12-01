@@ -11,6 +11,7 @@ Observability service used to collect **logs**, **metrics**, **apm** and **heart
 * [Docker](www.docker.com)
 * [FluentBit Carbon Plugin](https://github.com/fluent-beats/fluent-bit-carbon)
 * [FluentBit Docker Stats Plugin](https://github.com/fluent-beats/fluent-bit-docker-stats)
+* [FluentBit Docker Info Plugin](https://github.com/fluent-beats/fluent-bit-docker-info)
 
 # Supported Orchestrators
 - [Docker Swarm Mode](https://docs.docker.com/engine/swarm/)
@@ -65,6 +66,8 @@ access Docker Engine API and collect stats for:
 ### Health checks
 
 TODO
+
+## Build
 
 ## Testing locally
 ``` bash
