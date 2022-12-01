@@ -7,6 +7,8 @@ services:
     ports:
         - "24224:24224/tcp"
         - "8125:8125/udp"
+    networks:
+      - host
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
         - /var/lib/docker/containers:/var/lib/docker/containers
@@ -23,4 +25,9 @@ secrets:
    secret.service.es.http_host.v1:
     external: true
    secret.service.es.http_pwd.v1:
+    external: true
+
+networks:
+  host:
+    name: host
     external: true
