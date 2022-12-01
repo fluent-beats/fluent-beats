@@ -5,14 +5,10 @@ services:
   fluent-beats:
     image: fluent-beats/fluent-beats:latest
     build: ../.
-    ports:
-        - "24224:24224/tcp"
-        - "8125:8125/udp"
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
         - /var/lib/docker/containers:/var/lib/docker/containers
-    networks:
-      - fluent
+    network_mode: "host"
     environment:
         ES_HTTP_HOST_SECRET: /run/secrets/secret.service.es.http_host
         ES_HTTP_PWD_SECRET: /run/secrets/secret.service.es.http_pwd
@@ -28,6 +24,8 @@ services:
       build: ./fake-service
       depends_on:
         - fluent-beats
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
       networks:
         - fluent
       labels:
@@ -47,6 +45,8 @@ services:
       build: ./fake-service
       depends_on:
         - fluent-beats
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
       networks:
         - fluent
       labels:

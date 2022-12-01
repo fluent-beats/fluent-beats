@@ -15,7 +15,7 @@ random_apm() {
       ;;
    esac
 
-   nc -w0 -q0 -u fluent-beats 8125 <<< "$value"
+   nc -w0 -q0 -u host.docker.internal 8125 <<< "$value"
 }
 
 random_log() {
