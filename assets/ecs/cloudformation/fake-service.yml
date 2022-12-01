@@ -28,6 +28,10 @@ Resources:
             ContainerDefinitions:
                 - Name: fake-service
                   Image: !Ref DockerImage
+                  ExtraHosts:
+                    - "host.docker.internal:host-gateway"
+                  Environment:
+                    - SERVICE_NAME: "fake-service"
                   DockerLabels:
                     - flb_env: !Sub ${EnvironmentName}
                     - flb_service: "service-a"
