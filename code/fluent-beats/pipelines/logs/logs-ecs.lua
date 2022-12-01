@@ -1,11 +1,17 @@
 -- Translates Fluentd Log to Elastic ECS
 
+AGENT_NAME = 'fluent-beats'
 MODULE_NAME = 'docker'
 ECS_VERSION = "8.0.0"
 
 function add_ecs(input, output)
   output['ecs'] = {}
   output['ecs']['version'] = ECS_VERSION
+end
+
+function add_agent(input, output)
+  output['agent'] = {}
+  output['agent']['name'] = AGENT_NAME
 end
 
 function add_event(input, output, event)
@@ -52,6 +58,7 @@ function fluentd_to_ecs(tag, timestamp, record)
 
   -- https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html
   add_ecs(record, new_record)
+  add_agent(input, new_record)
   add_event(record, new_record, 'log')
   add_service(record, new_record)
   add_container(record, new_record)

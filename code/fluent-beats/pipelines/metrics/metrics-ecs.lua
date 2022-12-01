@@ -1,11 +1,17 @@
 -- Translates Docker Metrics to Elastic ECS Event
 
+AGENT_NAME = 'fluent-beats'
 MODULE_NAME = 'docker'
 ECS_VERSION = "8.0.0"
 
 function add_ecs(input, output)
   output['ecs'] = {}
   output['ecs']['version'] = ECS_VERSION
+end
+
+function add_agent(input, output)
+  output['agent'] = {}
+  output['agent']['name'] = AGENT_NAME
 end
 
 function add_event(input, output, event)
@@ -37,6 +43,7 @@ end
 function add_common(input, output, stat)
   -- https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html
   add_ecs(input, output)
+  add_agent(input, output)
   add_event(input, output, stat)
   add_metric_set(input, output, stat)
   add_service(input, output)
@@ -176,6 +183,7 @@ function memory_stats(input)
     output['container']['memory']['usage'] = output['docker']['memory']['usage']['pct']
   end
 
+   -- ECS fields
   add_common(input, output, 'memory')
 
   return output

@@ -1,11 +1,17 @@
 -- Translates Carbon Metric to Elastic ECS
 
+AGENT_NAME = 'fluent-beats'
 MODULE_NAME = 'statsd'
 ECS_VERSION = "8.0.0"
 
 function add_ecs(input, output)
   output['ecs'] = {}
   output['ecs']['version'] = ECS_VERSION
+end
+
+function add_agent(input, output)
+  output['agent'] = {}
+  output['agent']['name'] = AGENT_NAME
 end
 
 function add_event(input, output, event)
@@ -53,6 +59,7 @@ function carbon_to_ecs(tag, timestamp, record)
 
   -- https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html
   add_ecs(record, new_record)
+  add_agent(input, output)
   add_event(record, new_record, 'apm')
   add_metric_set(input, new_record, 'apm')
   add_labels(record, new_record)
