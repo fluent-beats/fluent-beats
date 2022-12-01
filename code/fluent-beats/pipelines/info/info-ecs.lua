@@ -53,6 +53,41 @@ function add_common(input, output, info)
   add_container(input, output)
 end
 
+function container_info(input)
+  output = {}
+
+  -- Beats fields
+  output['docker'] = {}
+  output['docker']['container'] = {}
+  output['docker']['container']['created'] = input['Created']
+  output['docker']['container']['command'] = input['Config']['Cmd']
+  output['docker']['container']['status'] = input['State']['Status']
+
+  -- ips
+  output['docker']['container']['ip_addresses'] = {}
+  for k,v in pairs(input['NetworkSettings']['Networks']) do
+    table.insert(output['docker']['container']['ip_addresses'], input['NetworkSettings']['Networks'][k]['IPAddress'])
+  end
+
+  -- labels (falhando em alguns containers)
+  -- if input['Config']['Labels'] then
+  --   output['docker']['container']['labels'] = {}
+  --   for k,v in pairs(input['Config']['Labels']) do
+  --     output['docker']['container']['labels'][k] = v
+  --   end
+  -- end
+
+  -- container size
+  output['docker']['container']['size'] = {}
+  output['docker']['container']['size']['root_fs'] = input['SizeRootFs']
+  output['docker']['container']['size']['rw'] = input['SizeRw']
+
+  -- ECS fields
+  add_common(input, output, 'container')
+  return output
+end
+
+
 function health_info(input)
   output = {}
 
@@ -82,6 +117,7 @@ function docker_info_to_ecs(tag, timestamp, record)
   -- split record in multiple records
   new_records = {}
 
+  table.insert(new_records, container_info(record))
   table.insert(new_records, health_info(record))
 
   return 2, timestamp, new_records
