@@ -1,8 +1,10 @@
 -- Translates Carbon Metric to Elastic ECS
 
-AGENT_NAME = 'fluent-beats'
 MODULE_NAME = 'statsd'
 ECS_VERSION = "8.0.0"
+AGENT_NAME = 'fluent-beats'
+AGENT_ID = os.getenv('AGENT_ID')
+AGENT_HOST = os.getenv('AGENT_HOST')
 
 function add_ecs(input, output)
   output['ecs'] = {}
@@ -11,7 +13,9 @@ end
 
 function add_agent(input, output)
   output['agent'] = {}
-  output['agent']['name'] = AGENT_NAME
+  output['agent']['id'] = AGENT_ID
+  output['agent']['hostname'] = AGENT_HOST
+  output['agent']['name'] = AGENT_HOST .. '.' .. AGENT_NAME
 end
 
 function add_event(input, output, event)
@@ -34,8 +38,6 @@ end
 
 function add_container(input, output)
   output['container'] = {}
-  -- output['container']['id'] = input['container_id']
-  -- output['container']['name'] = input['container_name']
   output['container']['runtime'] = 'docker'
 end
 

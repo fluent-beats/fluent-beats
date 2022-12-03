@@ -1,9 +1,10 @@
-
 -- Translates Docker Info to Elastic ECS Event
 
-AGENT_NAME = 'fluent-beats'
 MODULE_NAME = 'docker'
 ECS_VERSION = "8.0.0"
+AGENT_NAME = 'fluent-beats'
+AGENT_ID = os.getenv('AGENT_ID')
+AGENT_HOST = os.getenv('AGENT_HOST')
 
 function add_ecs(input, output)
   output['ecs'] = {}
@@ -12,7 +13,9 @@ end
 
 function add_agent(input, output)
   output['agent'] = {}
-  output['agent']['name'] = AGENT_NAME
+  output['agent']['id'] = AGENT_ID
+  output['agent']['hostname'] = AGENT_HOST
+  output['agent']['name'] = AGENT_HOST .. '.' .. AGENT_NAME
 end
 
 function add_event(input, output, event)
@@ -69,7 +72,7 @@ function container_info(input)
     table.insert(output['docker']['container']['ip_addresses'], input['NetworkSettings']['Networks'][k]['IPAddress'])
   end
 
-  -- labels (falhando em alguns containers)
+  -- labels (ignored)
   -- if input['Config']['Labels'] then
   --   output['docker']['container']['labels'] = {}
   --   for k,v in pairs(input['Config']['Labels']) do
