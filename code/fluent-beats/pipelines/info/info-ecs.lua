@@ -39,11 +39,9 @@ end
 
 function add_container(input, output)
   output['container'] = {}
-  output['container']['image'] = {}
   output['container']['id'] = input['Id']
   output['container']['name'] = input['Name']
   output['container']['runtime'] = 'docker'
-  output['container']['image']['name'] = input['Config']['Image']
 end
 
 function add_common(input, output, info)
@@ -54,6 +52,19 @@ function add_common(input, output, info)
   add_metric_set(input, output, info)
   add_service(input, output)
   add_container(input, output)
+end
+
+function image_info(input)
+  output = {}
+
+  -- ECS fields
+  add_common(input, output, 'image')
+
+  -- basic image infos
+  output['container']['image'] = {}
+  output['container']['image']['name'] = input['Config']['Image']
+
+  return output
 end
 
 function container_info(input)
@@ -72,7 +83,7 @@ function container_info(input)
     table.insert(output['docker']['container']['ip_addresses'], input['NetworkSettings']['Networks'][k]['IPAddress'])
   end
 
-  -- labels (ignored)
+  -- labels (not useful and usually full of trash)
   -- if input['Config']['Labels'] then
   --   output['docker']['container']['labels'] = {}
   --   for k,v in pairs(input['Config']['Labels']) do
@@ -89,7 +100,6 @@ function container_info(input)
   add_common(input, output, 'container')
   return output
 end
-
 
 function health_info(input)
   output = {}
@@ -121,6 +131,7 @@ function docker_info_to_ecs(tag, timestamp, record)
   new_records = {}
 
   table.insert(new_records, container_info(record))
+  table.insert(new_records, image_info(record))
   table.insert(new_records, health_info(record))
 
   return 2, timestamp, new_records
