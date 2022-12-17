@@ -132,6 +132,7 @@ function docker_info_to_ecs(tag, timestamp, record)
 
   table.insert(new_records, container_info(record))
   table.insert(new_records, image_info(record))
+  -- check piechart 'agent.id' vs 'container.id'
   table.insert(new_records, health_info(record))
 
   return 2, timestamp, new_records
