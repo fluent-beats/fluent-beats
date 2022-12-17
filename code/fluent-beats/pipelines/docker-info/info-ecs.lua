@@ -38,7 +38,10 @@ function add_service(input, output)
 end
 
 function add_container(input, output)
-  output['container'] = {}
+  if output['container'] == nil then
+    output['container'] = {}
+  end
+
   output['container']['id'] = input['Id']
   output['container']['name'] = input['Name']
   output['container']['runtime'] = 'docker'
@@ -57,13 +60,13 @@ end
 function image_info(input)
   output = {}
 
-  -- ECS fields
-  add_common(input, output, 'image')
-
   -- basic image infos
+  output['container'] = {}
   output['container']['image'] = {}
   output['container']['image']['name'] = input['Config']['Image']
 
+  -- ECS fields
+  add_common(input, output, 'image')
   return output
 end
 

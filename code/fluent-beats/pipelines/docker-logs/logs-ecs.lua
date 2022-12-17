@@ -33,7 +33,10 @@ function add_service(input, output)
 end
 
 function add_container(input, output)
-  output['container'] = {}
+  if output['container'] == nil then
+    output['container'] = {}
+  end
+
   output['container']['id'] = input['container_id']
   output['container']['name'] = input['container_name']
   output['container']['runtime'] = 'docker'

@@ -1,4 +1,4 @@
--- Translates Docker Metrics to Elastic ECS Event
+-- Translates Docker Stats to Elastic ECS Event
 
 MODULE_NAME = 'docker'
 ECS_VERSION = "8.0.0"
@@ -38,7 +38,10 @@ function add_service(input, output)
 end
 
 function add_container(input, output)
-  output['container'] = {}
+  if output['container'] == nil then
+    output['container'] = {}
+  end
+
   output['container']['id'] = input['id']
   output['container']['name'] = input['name']
   output['container']['runtime'] = 'docker'
