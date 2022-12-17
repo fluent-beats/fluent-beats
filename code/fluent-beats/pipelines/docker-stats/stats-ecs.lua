@@ -147,18 +147,17 @@ function cpu_stats(input)
       output['docker']['cpu']['system']['norm']['pct'] = cpu_sys_percent(input, 1, cpu_delta)
     end
 
-    -- extended (https://docs.docker.com/engine/api/v1.41/#tag/Container/operation/ContainerStats)
-    output['docker']['cpu']['stats'] = {}
-    output['docker']['cpu']['stats']['usage'] = input['cpu_stats']['system_cpu_usage']
-    output['docker']['cpu']['stats']['delta'] = input['cpu_stats']['cpu_usage']['total_usage'] - input['precpu_stats']['cpu_usage']['total_usage']
-    output['docker']['cpu']['stats']['cpus'] = input['cpu_stats']['online_cpus']
+    -- extended `docker stats` version (https://docs.docker.com/engine/api/v1.41/#tag/Container/operation/ContainerStats)
+    output['docker']['cpu']['dstats'] = {}
+    output['docker']['cpu']['dstats']['usage'] = input['cpu_stats']['system_cpu_usage']
+    output['docker']['cpu']['dstats']['delta'] = input['cpu_stats']['cpu_usage']['total_usage'] - input['precpu_stats']['cpu_usage']['total_usage']
+    output['docker']['cpu']['dstats']['cpus'] = input['cpu_stats']['online_cpus']
 
     if input['cpu_stats']['system_cpu_usage'] then
-      -- like docker stats command
-      output['docker']['cpu']['stats']['system'] = {}
-      output['docker']['cpu']['stats']['system']['delta'] = input['cpu_stats']['system_cpu_usage'] - input['precpu_stats']['system_cpu_usage']
-      output['docker']['cpu']['stats']['percent_usage'] =  (output['docker']['cpu']['stats']['delta'] / output['docker']['cpu']['stats']['system']['delta'])
-                                                           * output['docker']['cpu']['stats']['cpus'] * 100.0
+      output['docker']['cpu']['dstats']['system'] = {}
+      output['docker']['cpu']['dstats']['system']['delta'] = input['cpu_stats']['system_cpu_usage'] - input['precpu_stats']['system_cpu_usage']
+      output['docker']['cpu']['dstats']['percent_usage'] =  (output['docker']['cpu']['dstats']['delta'] / output['docker']['cpu']['dstats']['system']['delta'])
+                                                           * output['docker']['cpu']['dstats']['cpus'] * 100.0
     end
   end
 
@@ -194,8 +193,16 @@ function memory_stats(input)
       output['docker']['memory']['fail']['count'] = input['memory_stats']['failcnt']
     end
 
-    -- extended (https://docs.docker.com/engine/api/v1.41/#tag/Container/operation/ContainerStats)
+    -- windows only
+    if input['memory_stats']['commitbytes'] and input['memory_stats']['commitpeakbytes'] and input['memory_stats']['privateworkingset'] then
+      output['docker']['memory']['commit'] = {}
+      output['docker']['memory']['commit']['peak'] = input['memory_stats']['commitbytes']
+      output['docker']['memory']['commit']['total'] = input['memory_stats']['commitpeakbytes']
+      output['docker']['memory']['private_working_set'] = input['memory_stats']['privateworkingset']
+    end
+
     if input['memory_stats']['stats'] then
+      -- raw cgroups
       output['docker']['memory']['stats'] = input['memory_stats']['stats']
 
       -- rss
@@ -203,10 +210,11 @@ function memory_stats(input)
       output['docker']['memory']['rss']['total'] = input['memory_stats']['stats']['total_rss']
       output['docker']['memory']['rss']['pct'] = input['memory_stats']['stats']['total_rss'] / input['memory_stats']['limit']
 
-      -- like docker stats command
-      output['docker']['memory']['stats']['available'] = input['memory_stats']['limit']
-      output['docker']['memory']['stats']['used'] = input['memory_stats']['usage'] - input['memory_stats']['stats']['cache']
-      output['docker']['memory']['stats']['percent_usage'] = (output['docker']['memory']['stats']['used'] / output['docker']['memory']['stats']['available']) * 100.0
+      -- extended `docker stats` version (https://docs.docker.com/engine/api/v1.41/#tag/Container/operation/ContainerStats)
+      output['docker']['memory']['dstats'] = {}
+      output['docker']['memory']['dstats']['available'] = input['memory_stats']['limit']
+      output['docker']['memory']['dstats']['used'] = input['memory_stats']['usage'] - input['memory_stats']['stats']['cache']
+      output['docker']['memory']['dstats']['percent_usage'] = (output['docker']['memory']['dstats']['used'] / output['docker']['memory']['dstats']['available']) * 100.0
     end
 
     -- ECS fields
