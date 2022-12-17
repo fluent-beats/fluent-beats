@@ -73,6 +73,34 @@ function cpu_sys_percent(input, cpus_count, cpu_delta)
   return delta_cpu_for(cpus_count, delta, cpu_delta)
 end
 
+function blkio_for(source, dest, input, output)
+  --  https://www.datadoghq.com/blog/how-to-collect-docker-metrics/
+
+  if input['blkio_stats'][source] then
+    output['docker']['diskio']['read'][dest] = 0
+    output['docker']['diskio']['write'][dest] = 0
+    output['docker']['diskio']['summary'][dest] = 0
+
+    for i,att in ipairs(input['blkio_stats'][source]) do
+      -- read
+      if att.op == 'Read' then
+        output['docker']['diskio']['read'][dest] = output['docker']['diskio']['read'][dest] + att.value
+      end
+
+      --write
+      if att.op == 'Write' then
+        output['docker']['diskio']['write'][dest] = output['docker']['diskio']['write'][dest] + att.value
+      end
+
+      --total
+      if att.op == 'Total' then
+        output['docker']['diskio']['summary'][dest] = output['docker']['diskio']['summary'][dest] + att.value
+      end
+
+    end
+  end
+end
+
 function cpu_stats(input)
   output = {}
 
@@ -201,24 +229,13 @@ function disk_stats(input)
   output['docker']['diskio'] = {}
   output['docker']['diskio']['read'] = {}
   output['docker']['diskio']['write'] = {}
-  output['docker']['diskio']['read']['bytes'] = 0
-  output['docker']['diskio']['write']['bytes'] = 0
+  output['docker']['diskio']['summary'] = {}
 
-  --  https://www.datadoghq.com/blog/how-to-collect-docker-metrics/
-  if input['blkio_stats']['io_service_bytes_recursive'] then
-    for i,att in ipairs(input['blkio_stats']['io_service_bytes_recursive']) do
-      -- read
-      if att.op == 'Read' then
-        output['docker']['diskio']['read']['bytes'] = output['docker']['diskio']['read']['bytes'] + att.value
-      end
-
-      --write
-      if att.op == 'Write' then
-        output['docker']['diskio']['write']['bytes'] = output['docker']['diskio']['write']['bytes'] + att.value
-      end
-    end
-    output['docker']['diskio']['total'] = output['docker']['diskio']['read']['bytes'] + output['docker']['diskio']['write']['bytes']
-  end
+  blkio_for('io_serviced_recursive', 'ops', input, output)
+  blkio_for('io_service_bytes_recursive', 'bytes', input, output)
+  blkio_for('io_service_time_recursive', 'service_time', input, output)
+  blkio_for('io_wait_time_recursive', 'wait_time', input, output)
+  blkio_for('io_queue_recursive', 'queued', input, output)
 
   -- ECS fields
   output['container'] = {}
