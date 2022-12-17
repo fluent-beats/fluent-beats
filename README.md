@@ -8,6 +8,7 @@ Observability service used to collect **logs**, **metrics**, **apm** and **heart
 * [FluentBit Carbon Plugin](https://github.com/fluent-beats/fluent-bit-carbon)
 * [FluentBit Docker Stats Plugin](https://github.com/fluent-beats/fluent-bit-docker-stats)
 * [FluentBit Docker Info Plugin](https://github.com/fluent-beats/fluent-bit-docker-info)
+* [FluentBit Docker System Plugin](https://github.com/fluent-beats/fluent-bit-docker-system)
 
 # Supported Orchestrators
 - [Docker Swarm Mode](https://docs.docker.com/engine/swarm/)
@@ -17,11 +18,11 @@ Observability service used to collect **logs**, **metrics**, **apm** and **heart
 
 This service is designed to provide ligthweight observability capababilities.
 
-Its deployed as a [Docker Swarm Global Service](https://docs.docker.com/engine/swarm/services/#replicated-or-global-services) inside a Docker cluster in order to receive any type of observability information from other services.
+Its was desined to be deployed as a [Docker Swarm Global Service](https://docs.docker.com/engine/swarm/services/#replicated-or-global-services), or equivalent, inside a Docker cluster in order to receive any type of observability information from other services.
 
-## Container requirements
+## Requirements
 
-To work properly the container requires:
+To work properly it requires:
 
 * Port bindings:
     * `24224/tcp`: Used to receive Logs from Docker Fluentd Driver
@@ -31,44 +32,30 @@ To work properly the container requires:
     * `/var/lib/docker/containers`: Used to detect all container running in the host
 
 
-## Container capabilities
-Its able to handle 4 main workflows:
+## Features
 
-### Log
+- [Logs](https://github.com/fluent-beats/fluent-beats/master/docs/pipelines/docker-logs.md)
+- [Docker Container Info](https://github.com/fluent-beats/fluent-beats/master/docs/pipelines/docker-info.md)
+- [Docker Container Stats](https://github.com/fluent-beats/fluent-beats/master/docs/pipelines/docker-stats.md)
+- [Docker System](https://github.com/fluent-beats/fluent-beats/master/docs/pipelines/docker-system.md)
+- [APM](https://github.com/fluent-beats/fluent-beats/master/docs/pipelines/apm.md)
 
-Logs collection relies on features provided by [Docker Fluentd Driver](https://docs.docker.com/config/containers/logging/fluentd/) allowing containers to ship their logs to underline `host node`.
-
-The Docker Fluentd Driver can be configured to ship custom tags, so logs can be sharded into buckets just like Metrics.
-
-
-### APM
-
-APM collection relies on extended StatsD datagrams.
-
-To support it the service uses a custom plugin [FluentBit Carbon Plugin](https://github.com/fluent-beats/fluent-bit-carbon), that can parse the extended datagram properly.
-
-### Metrics
-
-This service is able to collect metrics form all Docker container running in the same `host node`.
-
-To support it the service uses a custom plugin [FluentBit Docker Stats Plugin](https://github.com/fluent-beats/fluent-bit-docker-stats), that can
-access Docker Engine API and collect stats for:
-
-* Memory
-* CPU
-* Network
-* Disk
-
-### Health checks
-
-TODO
 
 ## Build
 
+TODO
+
 ## Testing locally
+
+The project contains a test stack, it requires properly configuration of Elasticsearch secrets by creating 2 files.
+
+- `/test/secrets/http_host.txt`: contains the ES hostname
+- `/test./secrets/http_host.txt`: contains the ES password
+
+Once configured the test stack can be started:
+
 ``` bash
 docker-compose -f docker-compose-test.yml up
-echo "click;env=prod;service=my-service:11|c|@0.1" | nc -w0 -q0 -u 127.0.0.1 8125
 ```
 
 ## Notes about Fluent Bit
