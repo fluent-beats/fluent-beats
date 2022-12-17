@@ -62,6 +62,7 @@ function system_info(input)
   output['docker']['info'] = {}
   output['docker']['info']['containers'] = {}
 
+  output['docker']['info']['id'] = input['ID']
   output['docker']['info']['images'] = input['Images']
   output['docker']['info']['containers']['total'] = input['Containers']
   output['docker']['info']['containers']['running'] = input['ContainersRunning']
