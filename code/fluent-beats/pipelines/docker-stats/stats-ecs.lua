@@ -18,6 +18,11 @@ function add_agent(input, output)
   output['agent']['name'] = AGENT_HOST .. '.' .. AGENT_NAME
 end
 
+function add_host(input, output)
+  output['host'] = {}
+  output['host']['name'] = AGENT_HOST
+end
+
 function add_event(input, output, event)
   output['event'] = {}
   output['event']['kind'] = 'metric'
@@ -48,6 +53,7 @@ function add_common(input, output, stat)
   -- https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html
   add_ecs(input, output)
   add_agent(input, output)
+  add_host(input, output)
   add_event(input, output, stat)
   add_metric_set(input, output, stat)
   add_service(input, output)
