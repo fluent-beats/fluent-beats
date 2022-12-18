@@ -18,6 +18,11 @@ function add_agent(input, output)
   output['agent']['name'] = AGENT_HOST .. '.' .. AGENT_NAME
 end
 
+function add_host(input, output)
+  output['host'] = {}
+  output['host']['name'] = AGENT_HOST
+end
+
 function add_event(input, output, event)
   output['event'] = {}
   output['event']['kind'] = 'event'
@@ -28,8 +33,7 @@ end
 
 function add_service(input, output)
   output['service'] = {}
-  output['service']['none'] = {}
-  output['service']['none']['name'] = input['container_id']
+  output['service']['name'] = input['container_id']
 end
 
 function add_container(input, output)
@@ -37,6 +41,16 @@ function add_container(input, output)
   output['container']['id'] = input['container_id']
   output['container']['name'] = input['container_name']
   output['container']['runtime'] = 'docker'
+end
+
+function add_common(input, output, info)
+  -- https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html
+  add_ecs(input, output)
+  add_agent(input, output)
+  add_host(input, output)
+  add_event(input, output, info)
+  add_service(input, output)
+  add_container(input, output)
 end
 
 function add_labels(input, output)
@@ -60,16 +74,12 @@ end
 function fluentd_to_ecs(tag, timestamp, record)
   new_record = {}
 
-  -- https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html
-  add_ecs(record, new_record)
-  add_agent(input, new_record)
-  add_event(record, new_record, 'log')
-  add_service(record, new_record)
-  add_container(record, new_record)
-  add_labels(record, new_record)
-
   -- https://www.elastic.co/guide/en/observability/8.2/logs-app-fields.html
   add_message_log(record, new_record)
+  add_labels(record, new_record)
+
+  -- ECS fields
+  add_common(record, new_record, 'log')
 
   return 2, timestamp, new_record
 end
