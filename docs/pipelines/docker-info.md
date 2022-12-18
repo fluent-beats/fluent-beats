@@ -30,9 +30,9 @@ The Docker container data stream collects information and statistics about runni
  docker.container.size.rw      | Size of the files that have been created or changed since creation.                            | long             | gauge
  docker.container.status       | Container status.                                                                              | keyword          |
  ecs.version                   | ECS version this event conforms to. ecs.version is a required field and must exist in all events. When querying across multiple indices -- which may conform to slightly different ECS versions -- this field lets integrations adjust to the schema version of the events.         | keyword          |
- event.dataset                 | Event dataset                                                                                  | constant_keyword |
- event.kind                    | Event kind                                                                                     | constant_keyword |
- event.module                  | Event module                                                                                   | constant_keyword |
+ event.dataset                 | Event dataset.                                                                                 | constant_keyword |
+ event.kind                    | Event kind.                                                                                    | constant_keyword |
+ event.module                  | Event module.                                                                                  | constant_keyword |
  service.address               | Address where data about this service was collected from. This should be a URI, network address (ipv4:port or [ipv6]:port) or a resource path (sockets).                                                                                                                     | keyword          |
  service.type                  | The type of the service data is collected from. The type can be used to group and correlate logs and metrics from one service type. Example: If logs or metrics are collected from Elasticsearch, service.type would be elasticsearch.                                                 | keyword          |
 
@@ -66,9 +66,9 @@ Healthcheck data will only be available from Docker containers where the Docker 
  docker.healthcheck.failingstreak    | concurent failed check                                                                         | integer          | counter
  docker.healthcheck.status           | Healthcheck status code                                                                        | keyword          |
  ecs.version                         | ECS version this event conforms to. ecs.version is a required field and must exist in all events. When querying across multiple indices -- which may conform to slightly different ECS versions -- this field lets integrations adjust to the schema version of the events.               | keyword          |
- event.dataset                       | Event dataset                                                                                  | constant_keyword |
- event.kind                          | Event kind                                                                                     | constant_keyword |
- event.module                        | Event module                                                                                   | constant_keyword |
+ event.dataset                       | Event dataset.                                                                                 | constant_keyword |
+ event.kind                          | Event kind.                                                                                    | constant_keyword |
+ event.module                        | Event module.                                                                                  | constant_keyword |
  service.address                     | Address where data about this service was collected from. This should be a URI, network address (ipv4:port or [ipv6]:port) or a resource path (sockets).                                                                                                                           | keyword          |
  service.type                        | The type of the service data is collected from. The type can be used to group and correlate logs and metrics from one service type. Example: If logs or metrics are collected from Elasticsearch, service.type would be elasticsearch.                                                    | keyword          |
 
@@ -93,8 +93,8 @@ The Docker image data stream collects metrics on docker images
  container.name                      | Container name.                                                                                | keyword          |
  container.runtime                   | Runtime managing this container.                                                               | keyword          |
  ecs.version                         | ECS version this event conforms to. ecs.version is a required field and must exist in all events. When querying across multiple indices -- which may conform to slightly different ECS versions -- this field lets integrations adjust to the schema version of the events.               | keyword          |
- event.dataset                       | Event dataset                                                                                  | constant_keyword |
- event.kind                          | Event kind                                                                                     | constant_keyword |
- event.module                        | Event module                                                                                   | constant_keyword |
+ event.dataset                       | Event dataset.                                                                                 | constant_keyword |
+ event.kind                          | Event kind.                                                                                    | constant_keyword |
+ event.module                        | Event module.                                                                                  | constant_keyword |
  service.address                     | Address where data about this service was collected from. This should be a URI, network address (ipv4:port or [ipv6]:port) or a resource path (sockets).                                                                                                                           | keyword          |
  service.type                        | The type of the service data is collected from. The type can be used to group and correlate logs and metrics from one service type. Example: If logs or metrics are collected from Elasticsearch, service.type would be elasticsearch.                                                    | keyword          |
