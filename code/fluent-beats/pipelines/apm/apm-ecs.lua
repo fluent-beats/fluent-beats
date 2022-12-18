@@ -18,6 +18,11 @@ function add_agent(input, output)
   output['agent']['name'] = AGENT_HOST .. '.' .. AGENT_NAME
 end
 
+function add_host(input, output)
+  output['host'] = {}
+  output['host']['name'] = AGENT_HOST
+end
+
 function add_event(input, output, event)
   output['event'] = {}
   output['event']['kind'] = 'metric'
@@ -41,6 +46,17 @@ function add_container(input, output)
   output['container']['runtime'] = 'docker'
 end
 
+function add_common(input, output, info)
+  -- https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html
+  add_ecs(input, output)
+  add_agent(input, output)
+  add_host(input, output)
+  add_event(input, output, info)
+  add_metric_set(input, output, info)
+  add_service(input, output)
+  add_container(input, output)
+end
+
 function add_labels(input, output)
   output['labels'] = {}
 
@@ -59,17 +75,12 @@ end
 function carbon_to_ecs(tag, timestamp, record)
   new_record = {}
 
-  -- https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html
-  add_ecs(record, new_record)
-  add_agent(input, new_record)
-  add_event(record, new_record, 'apm')
-  add_metric_set(input, new_record, 'apm')
-  add_labels(record, new_record)
-  add_service(record, new_record)
-  add_container(record, new_record)
-
   -- https://www.elastic.co/guide/en/observability/8.2/metrics-app-fields.html
   add_statsd(record, new_record)
+  add_labels(record, new_record)
+
+  -- ECS fields
+  add_common(recod, new_record, 'apm')
 
   return 2, timestamp, new_record
 end
