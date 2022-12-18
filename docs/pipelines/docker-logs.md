@@ -1,7 +1,7 @@
 # Components
 
 - pipeline-logs.conf
-- system-ecs.lua
+- logs-ecs.lua
 
 # Design
 
@@ -22,7 +22,7 @@ Logs rely on `FluentD Foward protocol` used to receive logs from Docker containe
  event.dataset                   | Event dataset.                                                                                 | constant_keyword |
  event.kind                      | Event kind.                                                                                    | constant_keyword |
  event.module                    | Event module.                                                                                  | constant_keyword |
- labels.*                        | Set of labels collected from containers labels prefixed with `flb_`.                           | object           |
+ labels.*                        | Subset of containers's labels, containing only those prefixed with `flb_`. These container prefixed labels can be used to filter the logs by specific features like enviroment, version or service name.                                                                               | object           |
  message                         | Contains the log message, optimized for viewing in a log viewer.                               | text             |
  service.name                    | Service that produced the logs.                                                                | keyword          |
- stream                          | Log stream name.                                                                               | text             |
+ stream                          | Log stream name.                                                                               | keyword          |
