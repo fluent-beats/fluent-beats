@@ -7,6 +7,9 @@
 
 Logs rely on `FluentD Foward protocol` used to receive logs from Docker containers.
 
+This pipeline DOES NOT enforce, but will give best results with logs in JSON format.
+
+
 ### Exported fields
 
  Field                           | Description                                                                                    | Type             | Metric Type
@@ -23,6 +26,6 @@ Logs rely on `FluentD Foward protocol` used to receive logs from Docker containe
  event.kind                      | Event kind.                                                                                    | constant_keyword |
  event.module                    | Event module.                                                                                  | constant_keyword |
  labels.*                        | Subset of containers's labels, containing only those prefixed with `flb_`. These container prefixed labels can be used to filter the logs by specific features like enviroment, version or service name.                                                                               | object           |
- message                         | Contains the log message, optimized for viewing in a log viewer.                               | text             |
+ log.*                           | Contains all fields defined in JSON log entries, except by the `message` itself.               | object           |
+ message                         | Contains the log message.                                                                      | text             |
  service.name                    | Service that produced the logs.                                                                | keyword          |
- stream                          | Log stream name.                                                                               | keyword          |

@@ -33,7 +33,7 @@ end
 
 function add_service(input, output)
   output['service'] = {}
-  output['service']['name'] = output['labels']['service'] or input['container_id']
+  output['service']['name'] = output['labels']['service'] or input['container_name']
 end
 
 function add_container(input, output)
@@ -53,30 +53,33 @@ function add_common(input, output, info)
   add_container(input, output)
 end
 
-function add_labels(input, output)
+
+function add_log(input, output)
   output['labels'] = {}
+  output['log'] = {}
+  ignore = { ['container_id']=true, ['container_name']=true, ['message']=true, ['@timestamp']=true }
 
   for k,v in pairs(input) do
-    -- Find prefixed "flb_" Docker Labels and map
     i = string.find(k, "flb_", 1, true)
     if i then
+      -- log label
       nk = string.sub(k, i + string.len("flb_"))
       output['labels'][nk] = v
+    elseif not ignore[k] then
+      -- log property
+      output['log'][k] = v
     end
   end
-end
 
-function add_message_log(input, output)
-  output['stream'] = input['source']
-  output['message'] = input['log']
+  -- required root message
+  output['message'] = input['message']
 end
 
 function fluentd_to_ecs(tag, timestamp, record)
   new_record = {}
 
   -- https://www.elastic.co/guide/en/observability/8.2/logs-app-fields.html
-  add_message_log(record, new_record)
-  add_labels(record, new_record)
+  add_log(record, new_record)
 
   -- ECS fields
   add_common(record, new_record, 'log')
