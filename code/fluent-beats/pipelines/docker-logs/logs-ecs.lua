@@ -33,7 +33,7 @@ end
 
 function add_service(input, output)
   output['service'] = {}
-  output['service']['name'] = input['container_id']
+  output['service']['name'] = output['labels']['service'] or input['container_id']
 end
 
 function add_container(input, output)
