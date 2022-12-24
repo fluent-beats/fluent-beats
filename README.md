@@ -1,14 +1,10 @@
 # Description
 
-Observability service used to collect **logs**, **metrics**, **apm** and **heartbeats** from Docker containers and ship them into [ElasticSearch](https://www.elastic.co) using [FluentBit](https://fluentbit.io/) instead native [Elastic Beats](https://www.elastic.co/beats/).
+`Fluent Beats` is a set of observability pipelines for **Docker Containers**, that replace [Elastic Beats](https://www.elastic.co/beats/) by its lightweight competitor [FluentBit](https://fluentbit.io/), to ship them into [Elastic Stack](https://www.elastic.co/elastic-stack/)
 
 # Requirements
 
 * [Docker](www.docker.com)
-* [FluentBit Carbon Plugin](https://github.com/fluent-beats/fluent-bit-carbon)
-* [FluentBit Docker Stats Plugin](https://github.com/fluent-beats/fluent-bit-docker-stats)
-* [FluentBit Docker Info Plugin](https://github.com/fluent-beats/fluent-bit-docker-info)
-* [FluentBit Docker System Plugin](https://github.com/fluent-beats/fluent-bit-docker-system)
 
 # Supported Orchestrators
 - [Docker Swarm Mode](https://docs.docker.com/engine/swarm/)
@@ -16,9 +12,11 @@ Observability service used to collect **logs**, **metrics**, **apm** and **heart
 
 # Design
 
-This service is designed to provide ligthweight observability capababilities.
+This service is designed to provide ligthweight observability capababilities for microservices running as Docker containers.
 
-Its was desined to be deployed as a [Docker Swarm Global Service](https://docs.docker.com/engine/swarm/services/#replicated-or-global-services), or equivalent, inside a Docker cluster in order to receive any type of observability information from other services.
+Its was designed to be deployed as a [Docker Swarm Global Service](https://docs.docker.com/engine/swarm/services/#replicated-or-global-services); or [AWS ECS equivalent](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html#service_scheduler_daemon); in order to receive any type of observability information from other services.
+
+Internally it translates all metrics and logs to [Elastic ECS](https://www.elastic.co/guide/en/ecs/current/index.html), which is the standard schema used by **Elasticsearch**
 
 ## Requirements
 
@@ -32,7 +30,7 @@ To work properly it requires:
     * `/var/lib/docker/containers`: Used to detect all container running in the host
 
 
-## Features
+## Featured pipelines
 
 - [Docker Logs](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-logs.md)
 - [Docker Container Info](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-info.md)
@@ -60,10 +58,7 @@ docker-compose -f docker-compose-test.yml up
 
 ## Notes about Fluent Bit
 
-- The `Fluent Bit` version used on this project is `1.8.11`, versions up to `1.8.11` are shipped as much bigger Docker images. These versions do not provide any useful feature for this particular design/solution (keep away from them).
-- In order to apply `Docker Secrets` extraction, the `Fluent Bit` Docker image version must include shell support (debug flavor). Again versions up to `1.8.11-debug` **look more like an elephant than an hummingbird** (keep away from them).
-
-
-## Notes about Elasticsearch
-
-- The container uses [Elastic ECS](https://www.elastic.co/guide/en/ecs/current/index.html) to translate incomming logs, events and metrics in order to properly ingestion on Elasticsearch.
+- The `Fluent Bit` version used by this project is `1.8.4`
+  - In order to apply `Docker Secrets` extraction, the `Fluent Bit` Docker image version must include shell support (debug flavor).
+- Versions up to `1.8.11` are shipped as much bigger Docker images and don't provide any useful feature for this particular solution
+  - Versions up to `1.8.11-debug` **are huge and not useful at all**.
