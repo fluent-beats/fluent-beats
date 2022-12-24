@@ -30,7 +30,7 @@ To work properly it requires:
     * `/var/lib/docker/containers`: Used to detect all container running in the host
 
 
-## Featured pipelines
+## Provided pipelines
 
 - [Docker Logs](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-logs.md)
 - [Docker Container Info](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-info.md)
@@ -38,10 +38,13 @@ To work properly it requires:
 - [Docker System](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-system.md)
 - [APM](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/apm.md)
 
+## Provided dashboards
 
-## Build
+The project provides some Kibana dashboards, equivalent to the original ones provided by Elastic Beats.
 
-TODO
+- [Details about provided dashboards](https://github.com/fluent-beats/fluent-beats/blob/master/assets/README.md)
+
+
 
 ## Testing locally
 
