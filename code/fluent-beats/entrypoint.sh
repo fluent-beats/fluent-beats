@@ -1,6 +1,10 @@
 # extract secrets
-export ES_HTTP_HOST=$(cat $ES_HTTP_HOST_SECRET)
-export ES_HTTP_PASSWD=$(cat $ES_HTTP_PWD_SECRET)
+if [[ ! -n  "${ES_HTTP_HOST}" ]]; then
+  export ES_HTTP_HOST=$(cat $ES_HTTP_HOST_SECRET)
+fi
+if [[ ! -n  "${ES_HTTP_PASSWD}" ]]; then
+  export ES_HTTP_PASSWD=$(cat $ES_HTTP_PWD_SECRET)
+fi
 
 # agent info
 export AGENT_ID=$($RAMDOM | md5sum | head -c 12)
