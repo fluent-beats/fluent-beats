@@ -1,5 +1,8 @@
 # Description
 
+
+![Fluent Beats](/docs/img/logo.svg "logo")
+
 `Fluent Beats` is a set of observability pipelines for **Docker Containers**, that replace [Elastic Beats](https://www.elastic.co/beats/) by its lightweight competitor [FluentBit](https://fluentbit.io/), to ship them into [Elastic Stack](https://www.elastic.co/elastic-stack/)
 
 # Requirements
