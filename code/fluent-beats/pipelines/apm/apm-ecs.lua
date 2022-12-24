@@ -69,7 +69,13 @@ function add_labels(input, output)
 end
 
 function add_statsd(input, output)
-  output['statsd'] = input
+  output['statsd'] = {}
+  output['statsd']['value'] = input['value']
+  output['statsd']['bucket'] = input['bucket']
+  output['statsd']['namespace'] = input['namespace']
+  output['statsd']['section'] = input['section']
+  output['statsd']['target'] = input['target']
+  output['statsd']['action'] = input['action']
 end
 
 function carbon_to_ecs(tag, timestamp, record)
