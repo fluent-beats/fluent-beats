@@ -3,8 +3,10 @@ version: '3.8'
 services:
   # global services (with port binding to host)
   fluent-beats:
-    image: fluent-beats/fluent-beats:latest
-    build: ../.
+    image: fluent-beats/fluent-beats:debug
+    build:
+      context: ../.
+      dockerfile: Dockerfile.debug
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
         - /var/lib/docker/containers:/var/lib/docker/containers
