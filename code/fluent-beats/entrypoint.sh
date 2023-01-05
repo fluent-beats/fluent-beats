@@ -7,7 +7,7 @@ if [[ ! -n  "${ES_HTTP_PASSWD}" ]]; then
 fi
 
 # agent info
-export AGENT_ID=$($RAMDOM | md5sum | head -c 12)
+export AGENT_ID=$(echo $RANDOM | md5sum | head -c 12)
 export AGENT_HOST=$(cat /proc/sys/kernel/hostname)
 
 # start
