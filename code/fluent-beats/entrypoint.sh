@@ -8,7 +8,9 @@ fi
 
 # agent info
 export AGENT_ID=$(echo $RANDOM | md5sum | head -c 12)
-export AGENT_HOST=$(cat /proc/sys/kernel/hostname)
+export AGENT_HOST=$(hostname)
+export AGENT_IP=$(hostname -i)
+
 
 # start
 exec /fluent-bit/bin/fluent-bit \

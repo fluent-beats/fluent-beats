@@ -5,6 +5,7 @@ ECS_VERSION = "8.0.0"
 AGENT_NAME = 'fluent-beats'
 AGENT_ID = os.getenv('AGENT_ID')
 AGENT_HOST = os.getenv('AGENT_HOST')
+AGENT_IP = os.getenv('AGENT_IP')
 
 function add_ecs(input, output)
   output['ecs'] = {}
@@ -21,6 +22,7 @@ end
 function add_host(input, output)
   output['host'] = {}
   output['host']['name'] = AGENT_HOST
+  output['host']['ip'] = AGENT_IP
 end
 
 function add_event(input, output, event)
