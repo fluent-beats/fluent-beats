@@ -83,7 +83,6 @@ function add_statsd(input, output)
   output['statsd']['section'] = input['section']
   output['statsd']['target'] = input['target']
   output['statsd']['action'] = input['action']
-
 end
 
 function carbon_to_ecs(tag, timestamp, record)
@@ -94,7 +93,7 @@ function carbon_to_ecs(tag, timestamp, record)
   add_labels(record, new_record)
 
   -- ECS fields
-  add_common(recod, new_record, 'apm')
+  add_common(record, new_record, 'apm')
 
   return 2, timestamp, new_record
 end
