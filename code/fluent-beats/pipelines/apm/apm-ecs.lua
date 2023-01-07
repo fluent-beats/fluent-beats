@@ -72,12 +72,18 @@ end
 
 function add_statsd(input, output)
   output['statsd'] = {}
+
+  -- raw (for alerts)
+  bucket = input['bucket']
+  output['statsd'][bucket] = input['value']
+
+  -- components (for search / dashboards)
   output['statsd']['value'] = input['value']
-  output['statsd']['bucket'] = input['bucket']
   output['statsd']['namespace'] = input['namespace']
   output['statsd']['section'] = input['section']
   output['statsd']['target'] = input['target']
   output['statsd']['action'] = input['action']
+
 end
 
 function carbon_to_ecs(tag, timestamp, record)
