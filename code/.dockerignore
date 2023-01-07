@@ -1,9 +1,10 @@
 # Folders
 .git
-es
+docs
 
 # Files
 *.md
 docker-compose.yml
 docker-compose-test.yml
 Dockerfile
+Dockerfile.debug
