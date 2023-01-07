@@ -12,19 +12,23 @@ services:
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
         - /var/lib/docker/containers:/var/lib/docker/containers
-    environment:
-        ES_HTTP_HOST_SECRET: /run/secrets/secret.service.es.http_host
-        ES_HTTP_PWD_SECRET: /run/secrets/secret.service.es.http_pwd
     secrets:
-      - source: secret.service.es.http_host.v1
-        target: secret.service.es.http_host
-      - source: secret.service.es.http_pwd.v1
-        target: secret.service.es.http_pwd
+      - source: secret.fluent-beats.es_http_host.v1
+        target: es-host.txt
+      - source: secret.fluent-beats.es_http_pwd.v1
+        target: es-pwd.txt
+    configs:
+      - source: config.fluent-beats.env_file.v1
+        target: /run/configs/fluent-beats.env
 
 secrets:
-   secret.service.es.http_host.v1:
+   secret.fluent-beats.es_http_host.v1:
     external: true
-   secret.service.es.http_pwd.v1:
+   secret.fluent-beats.es_http_pwd.v1:
+    external: true
+
+configs:
+  config.fluent-beats.env_file.v1:
     external: true
 
 networks:

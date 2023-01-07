@@ -10,15 +10,16 @@ services:
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
         - /var/lib/docker/containers:/var/lib/docker/containers
+        # configs are not supported on non-swarm, using a bind volume
+        - type: bind
+          source: ./configs
+          target: /run/configs
     network_mode: "host"
-    environment:
-        ES_HTTP_HOST_SECRET: /run/secrets/secret.service.es.http_host
-        ES_HTTP_PWD_SECRET: /run/secrets/secret.service.es.http_pwd
     secrets:
-      - source: secret.service.es.http_host.v1
-        target: secret.service.es.http_host
-      - source: secret.service.es.http_pwd.v1
-        target: secret.service.es.http_pwd
+      - source: secret.fluent-beats.es_http_host.v1
+        target: es-host.txt
+      - source: secret.fluent-beats.es_http_pwd.v1
+        target: es-pwd.txt
 
   # replica services (no port binding to host)
   service-a:
@@ -64,10 +65,11 @@ services:
           tag: logs
 
 secrets:
-   secret.service.es.http_host.v1:
+   secret.fluent-beats.es_http_host.v1:
     file: ./secrets/http_host.txt
-   secret.service.es.http_pwd.v1:
+   secret.fluent-beats.es_http_pwd.v1:
     file: ./secrets/http_pwd.txt
+
 
 networks:
   fluent:
