@@ -16,7 +16,7 @@
 ---
 ## AWS Cloudformation
 
-Examples to apply **Fluent-Beats** observability using [AWS ECS](https://docs.aws.amazon.com/ecs/)
+Examples to apply **Fluent Beats** observability using [AWS ECS](https://docs.aws.amazon.com/ecs/)
 
 - fake-service.yml: Observable **ECS task** deploy
-- fluent-beatas.yml: Fluent-Beats **ECS daemon** deploy
+- fluent-beatas.yml: Fluent Beats **ECS daemon** deploy
