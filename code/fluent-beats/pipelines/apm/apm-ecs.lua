@@ -31,6 +31,8 @@ function add_host(input, output)
   output['host'] = {}
   output['host']['name'] = AGENT_HOST
   output['host']['ip'] = AGENT_IP
+  -- required for ML features
+  output['host']['hostname'] = AGENT_HOST
 end
 
 function add_event(input, output, event)
