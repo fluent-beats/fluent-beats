@@ -5,14 +5,20 @@
 
 # Configurations
 
-The APM metrics relies on `statsd` datagrams that must be aggregated extarnally.
+The APM metrics relies on `statsd` datagrams, sent to Fluent Beats by external application.
 
-The values must be aggregated extarnally (sampling, averages, etc)  because:
+The pipeline supports the following `statsd` datagram formats:
 
-1. This pipeline will not perform any sampling/average processing
-2. Elasticsearch does not provide any support for sampling/average over `statsd` datagrams
+- Carbon
+- Telegraph
+- Sysdig StatsD
+- Etsy StatsD
 
-To support external aggregation Fluent Beats provides its [Micrometer Statsd Plugin]()
+**Note:**
+> This pipepline does not perform any aggregation on `statsd` datagrams, all metrics must be **aggregated externally**
+>
+> Fluent Beats provides its [Micrometer Statsd Plugin]() to support Java applications in this task.
+
 ## APM
 
 ### Exported fields
