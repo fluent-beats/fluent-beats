@@ -1,6 +1,6 @@
 -- Translates Carbon Metric to Elastic ECS
 
-MODULE_NAME = 'statsd'
+MODULE_NAME = 'apm'
 ECS_VERSION = "8.0.0"
 AGENT_NAME = 'fluent-beats'
 AGENT_ID = os.getenv('AGENT_ID')
@@ -10,6 +10,14 @@ AGENT_IP = os.getenv('AGENT_IP')
 function add_ecs(input, output)
   output['ecs'] = {}
   output['ecs']['version'] = ECS_VERSION
+end
+
+function add_data_stream(input, output)
+  -- https://www.elastic.co/pt/blog/an-introduction-to-the-elastic-data-stream-naming-scheme
+  output['data_stream'] = {}
+  output['data_stream']['type'] = "metrics"
+  output['data_stream']['dataset'] = MODULE_NAME .. '.stats'
+  output['data_stream']['namespace'] = "default"
 end
 
 function add_agent(input, output)
@@ -51,6 +59,7 @@ end
 function add_common(input, output, info)
   -- https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html
   add_ecs(input, output)
+  add_data_stream(input, output)
   add_agent(input, output)
   add_host(input, output)
   add_event(input, output, info)
@@ -70,30 +79,30 @@ function add_labels(input, output)
   end
 end
 
-function add_statsd(input, output)
-  output['statsd'] = {}
+function add_stats(input, output)
+  output['stats'] = {}
 
   -- raw (for alerts)
   bucket = input['bucket']
-  output['statsd'][bucket] = input['value']
+  output['stats'][bucket] = input['value']
 
   -- components (for search / dashboards)
-  output['statsd']['value'] = input['value']
-  output['statsd']['namespace'] = input['namespace']
-  output['statsd']['section'] = input['section']
-  output['statsd']['target'] = input['target']
-  output['statsd']['action'] = input['action']
+  output['stats']['value'] = input['value']
+  output['stats']['namespace'] = input['namespace']
+  output['stats']['section'] = input['section']
+  output['stats']['target'] = input['target']
+  output['stats']['action'] = input['action']
 end
 
 function carbon_to_ecs(tag, timestamp, record)
   new_record = {}
 
   -- https://www.elastic.co/guide/en/observability/8.2/metrics-app-fields.html
-  add_statsd(record, new_record)
+  add_stats(record, new_record)
   add_labels(record, new_record)
 
   -- ECS fields
-  add_common(record, new_record, 'apm')
+  add_common(record, new_record, 'stats')
 
   return 2, timestamp, new_record
 end

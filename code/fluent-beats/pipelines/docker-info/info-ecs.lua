@@ -12,6 +12,14 @@ function add_ecs(input, output)
   output['ecs']['version'] = ECS_VERSION
 end
 
+function add_data_stream(input, output)
+  -- https://www.elastic.co/pt/blog/an-introduction-to-the-elastic-data-stream-naming-scheme
+  output['data_stream'] = {}
+  output['data_stream']['type'] = "metrics"
+  output['data_stream']['dataset'] = MODULE_NAME .. '.info'
+  output['data_stream']['namespace'] = "default"
+end
+
 function add_agent(input, output)
   output['agent'] = {}
   output['agent']['id'] = AGENT_ID
@@ -54,6 +62,7 @@ end
 function add_common(input, output, info)
   -- https://www.elastic.co/guide/en/ecs/current/ecs-field-reference.html
   add_ecs(input, output)
+  add_data_stream(input, output)
   add_agent(input, output)
   add_host(input, output)
   add_event(input, output, info)
