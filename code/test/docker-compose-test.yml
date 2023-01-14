@@ -9,7 +9,8 @@ services:
       dockerfile: Dockerfile.debug
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
-        - /var/lib/docker/containers:/var/lib/docker/containers
+        - /var/lib/docker/containers:/var/lib/docker/containers:ro
+        - /proc:/hostfs/proc:ro
         # configs are not supported on non-swarm, using a bind volume
         - type: bind
           source: ./configs

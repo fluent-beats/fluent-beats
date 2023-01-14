@@ -131,6 +131,7 @@ COPY            --from=builder /bin/busybox /bin/
 # configs/pipelines
 COPY            /fluent-beats/config/*.conf /fluent-bit/etc/
 COPY            /fluent-beats/pipelines/apm/*.* /fluent-bit/etc/
+COPY            /fluent-beats/pipelines/host/*.* /fluent-bit/etc/
 COPY            /fluent-beats/pipelines/docker-info/*.* /fluent-bit/etc/
 COPY            /fluent-beats/pipelines/docker-logs/*.* /fluent-bit/etc/
 COPY            /fluent-beats/pipelines/docker-stats/*.* /fluent-bit/etc/
