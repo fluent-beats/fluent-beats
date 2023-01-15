@@ -11,7 +11,8 @@ services:
       - host
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock:ro
-        - /var/lib/docker/containers:/var/lib/docker/containers
+        - /var/lib/docker/containers:/var/lib/docker/containers:ro
+        - /proc:/hostfs/proc:ro
     secrets:
       - source: secret.fluent-beats.es_http_host.v1
         target: es-host.txt

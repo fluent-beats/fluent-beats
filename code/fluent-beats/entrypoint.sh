@@ -35,3 +35,4 @@ exec /fluent-bit/bin/fluent-bit \
 -e /fluent-bit/bin/flb-in_docker_stats.so \
 -e /fluent-bit/bin/flb-in_docker_info.so \
 -e /fluent-bit/bin/flb-in_docker_system.so \
+-e /fluent-bit/bin/flb-in_meminfo.so \

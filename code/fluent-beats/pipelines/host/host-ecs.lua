@@ -85,7 +85,9 @@ function memory_to_ecs(input, output)
   -- actual used
   output['system']['memory']['actual'] = {}
   output['system']['memory']['actual']['used'] = {}
-  output['system']['memory']['actual']['used']['pct'] = (input['Mem.used'] / input['Mem.total']) * 100.0
+  output['system']['memory']['actual']['used']['bytes'] = input['mem.used'] * 1024
+  output['system']['memory']['actual']['used']['pct'] = (input['mem.used'] / input['mem.total']) * 100.0
+  output['system']['memory']['actual']['free'] = input['mem.free'] * 1024
 
   add_common(input, output, 'memory')
 end
