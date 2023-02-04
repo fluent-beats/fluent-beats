@@ -108,6 +108,19 @@ function netif_to_ecs(input, output)
   add_common(input, output, 'network')
 end
 
+function load_to_ecs(input, output)
+  -- ECS fields
+  output['system'] = {}
+  output['system']['load'] = {}
+
+  -- load averages
+  output['system']['load']['1'] = input['load.1']
+  output['system']['load']['5'] = input['load.5']
+  output['system']['load']['15'] = input['load.15']
+
+  add_common(input, output, 'load')
+end
+
 function host_metric_to_ecs(tag, timestamp, record)
   new_record = {}
 
@@ -118,7 +131,8 @@ function host_metric_to_ecs(tag, timestamp, record)
     memory_to_ecs(record, new_record)
   elseif tag == 'host_netif' then
     netif_to_ecs(record, new_record)
+  elseif tag == 'host_load' then
+    load_to_ecs(record, new_record)
   end
-
   return 2, timestamp, new_record
 end
