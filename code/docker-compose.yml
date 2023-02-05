@@ -5,8 +5,13 @@ services:
     image: fluent-beats/fluent-beats:latest
     build: .
     ports:
+        - "2020:2020/tcp"
         - "24224:24224/tcp"
         - "8125:8125/udp"
+    healthcheck:
+      test: "wget --spider http://localhost:2020/api/v1/health || exit 1"
+      interval: 60s
+      start_period: 60s
     networks:
       - host
     volumes:
