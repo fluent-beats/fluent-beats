@@ -18,4 +18,5 @@ COPY            /fluent-beats/plugins/*.* /fluent-bit/bin/
 COPY            /fluent-beats/entrypoint.sh /entrypoint.sh
 
 # Run
+EXPOSE          2020
 ENTRYPOINT      ["sh", "/entrypoint.sh"]
