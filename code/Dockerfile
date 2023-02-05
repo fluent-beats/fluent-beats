@@ -187,4 +187,6 @@ COPY            /fluent-beats/entrypoint.sh /entrypoint.sh
 # Run
 # -------------
 EXPOSE          2020
+EXPOSE          24224
+EXPOSE          8125/udp
 ENTRYPOINT      ["sh", "/entrypoint.sh"]
