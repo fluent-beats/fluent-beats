@@ -34,7 +34,7 @@
 ## Not supported contexts
 - Observability
   - APM
-  - Uptime
+  - Uptime (todo)
   - User Experience
 
 # Design
@@ -68,7 +68,8 @@ The supported variables are:
 
  Variable                      | Description                                                                                    | Default
 -------------------------------|------------------------------------------------------------------------------------------------|------------------
- FLB_COLLECT_INTERVAL          | Time in seconds used by active plugins to collect data                                         | 10
+ FLB_DOCKER_METRICS_INTERVAL   | Time in seconds used by active plugins to collect data                                         | 10
+ FLB_HOST_METRICS_INTERVAL     | Time in seconds used by active plugins to collect data                                         | 10
  FLB_MEM_BUF_LIMIT             | Threshold value for input plugins backpressure control                                         | 10M
  FLB_FORWARD_BUF_CHUNK_SIZE    | Allocation block size used by `forward` input plugin                                           | 1M
  FLB_FORWARD_BUF_MAX_SIZE      | Memory limit for a message received by `forward` input plugin                                  | 6M
@@ -80,7 +81,7 @@ The supported variables are:
 - [Docker Container Info](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-info.md)
 - [Docker Container Stats](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-stats.md)
 - [Docker System](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-system.md)
-- [Host Netrics](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/host.md)
+- [Host Metrics](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/host.md)
 - [APM](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/apm.md)
 
 ## Provided dashboards
@@ -106,7 +107,7 @@ docker-compose -f docker-compose-test.yml up
 ## Notes about Fluent Bit
 
 - By default we use a bare minimal set of the standard `Fluent Bit` plugins/features
-- The `Fluent Bit` version used by this project is `1.8.4`
+- The `Fluent Bit` version used by this project is `1.8.11`
   - In order to apply `Docker Secrets` extraction, the `Fluent Bit` Docker image version must include shell support (debug flavor).
 - Versions up to `1.8.11` are shipped as much bigger Docker images and don't provide any useful feature for this particular solution
 
