@@ -26,7 +26,14 @@ services:
     configs:
       - source: config.fluent-beats.env_file.v1
         target: /run/configs/fluent-beats.env
-
+    deploy:
+      resources:
+          limits:
+            cpus: '0.50'
+            memory: 50M
+          reservations:
+            cpus: '0.25'
+            memory: 15M
 secrets:
    secret.fluent-beats.es_http_host.v1:
     external: true
