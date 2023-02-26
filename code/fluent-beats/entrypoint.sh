@@ -12,6 +12,7 @@ fi
 # setup_configs
 if [ -f "/run/configs/fluent-beats.env" ]; then
   echo -e "\033[1;32m - Using external configs\033[0m"
+  cat /run/configs/fluent-beats.env
   export $(grep -v '^#' /run/configs/fluent-beats.env | xargs)
 else
   echo -e "\033[1;33m - Using hardcoded configs\033[0m"
@@ -19,8 +20,8 @@ else
   export FLB_HOST_COLLECT_INTERVAL=10
   export FLB_MEM_BUF_LIMIT=3M
   export FLB_FORWARD_BUF_CHUNK_SIZE=1M
-  export FLB_FORWARD_BUF_MAX_SIZE=6M
-  export FLB_STORAGE_BACKLOG_MEM_LIMIT=5M
+  export FLB_FORWARD_BUF_MAX_SIZE=3M
+  export FLB_STORAGE_BACKLOG_MEM_LIMIT=10M
 fi
 
 # setup_agent
@@ -28,7 +29,7 @@ export AGENT_ID=$(echo $RANDOM | md5sum | head -c 12)
 export AGENT_HOST=$(hostname)
 export AGENT_IP=$(hostname -i)
 
-echo "---------------------"
+echo "\n---------------------"
 # start
 exec /fluent-bit/bin/fluent-bit \
 -c /fluent-bit/etc/fluent-bit.conf \
