@@ -66,7 +66,6 @@ function add_common(input, output, info)
   add_container(input, output)
 end
 
-
 function add_log(input, output)
   output['labels'] = {}
   output['log'] = {}
