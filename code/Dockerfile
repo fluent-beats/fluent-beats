@@ -3,7 +3,7 @@
 FROM            amd64/debian:buster-slim as builder
 
 ENV             DEBIAN_FRONTEND noninteractive
-ARG             FLB_VERSION=1.8.4
+ARG             FLB_VERSION=1.8.11
 
 # Setup toolchain
 # -------------
