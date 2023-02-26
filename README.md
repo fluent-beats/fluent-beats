@@ -68,9 +68,9 @@ The supported variables are:
 
  Variable                      | Description                                                                                    | Default
 -------------------------------|------------------------------------------------------------------------------------------------|------------------
- FLB_DOCKER_METRICS_INTERVAL   | Time in seconds used by active plugins to collect data                                         | 10
- FLB_HOST_METRICS_INTERVAL     | Time in seconds used by active plugins to collect data                                         | 10
- FLB_MEM_BUF_LIMIT             | Threshold value for input plugins backpressure control                                         | 10M
+ FLB_DOCKER_METRICS_INTERVAL   | Time in seconds to collect Docker metrics                                                      | 10
+ FLB_HOST_METRICS_INTERVAL     | Time in seconds to collect Host metrics                                                        | 10
+ FLB_MEM_BUF_LIMIT             | Threshold value for input plugins backpressure control                                         | 3M
  FLB_FORWARD_BUF_CHUNK_SIZE    | Allocation block size used by `forward` input plugin                                           | 1M
  FLB_FORWARD_BUF_MAX_SIZE      | Memory limit for a message received by `forward` input plugin                                  | 6M
  FLB_STORAGE_BACKLOG_MEM_LIMIT | Memory limit for backlog (unprocessed data) processing                                         | 5M
