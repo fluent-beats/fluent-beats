@@ -29,10 +29,10 @@ services:
     deploy:
       resources:
           limits:
-            cpus: '0.50'
+            cpus: '0.5'
             memory: 50M
           reservations:
-            cpus: '0.25'
+            cpus: '0.15'
             memory: 15M
 secrets:
    secret.fluent-beats.es_http_host.v1:
