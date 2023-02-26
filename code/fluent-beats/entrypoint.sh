@@ -15,8 +15,9 @@ if [ -f "/run/configs/fluent-beats.env" ]; then
   export $(grep -v '^#' /run/configs/fluent-beats.env | xargs)
 else
   echo -e "\033[1;33m - Using hardcoded configs\033[0m"
-  export FLB_COLLECT_INTERVAL=10
-  export FLB_MEM_BUF_LIMIT=10M
+  export FLB_DOCKER_COLLECT_INTERVAL=10
+  export FLB_HOST_COLLECT_INTERVAL=10
+  export FLB_MEM_BUF_LIMIT=3M
   export FLB_FORWARD_BUF_CHUNK_SIZE=1M
   export FLB_FORWARD_BUF_MAX_SIZE=6M
   export FLB_STORAGE_BACKLOG_MEM_LIMIT=5M
