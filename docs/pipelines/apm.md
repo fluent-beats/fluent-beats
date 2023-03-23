@@ -12,12 +12,10 @@ The pipeline supports the following `statsd` datagram formats:
 - Carbon
 - Telegraph
 - Sysdig StatsD
-- Etsy StatsD
+- Etsy StatsD (no tag support)
 
 **Note:**
-> This pipepline does not perform any aggregation on `statsd` datagrams, all metrics must be **aggregated externally**
->
-> Fluent Beats provides its [Micrometer Statsd Plugin]() to support Java applications in this task.
+> This pipepline does not perform any aggregation on `statsd` datagrams, all metrics must be **aggregated on client side**
 
 ## APM
 
