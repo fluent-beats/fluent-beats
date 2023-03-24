@@ -1,5 +1,7 @@
-# Folders
-**/secrets/*
-
-# Files
+# Plugins
 **/plugins/*
+!**/plugins/.empty
+
+# Secrets
+**/secrets/*
+!**/secrets/.empty
