@@ -7,6 +7,9 @@ Parameters:
     DockerImage:
         Description: The service Docker image.
         Type: String
+    FluentBeatsEnvFile:
+        Description: Arn path to Fluent Beats env file ("arn:aws:s3:::s3_bucket_name/file_name.env").
+        Type: String
     Cluster:
         Description: The ECS Cluster name that this service should run on
         Type: String
@@ -27,55 +30,74 @@ Resources:
             TaskRoleArn: !Ref TaskRole
             NetworkMode: host
             Volumes:
-                - Name: socket
+                - Name: docker_socket
                   Host:
-                    SourcePath: /var/run
-                - Name: containers
+                    SourcePath: /var/run/docker.sock
+                - Name: docker_containers
                   Host:
                     SourcePath: /var/lib/docker/containers
+                - Name: host_proc
+                  Host:
+                    SourcePath: /proc
             ContainerDefinitions:
                 - Name: fluent-beats
                   Essential: true
-                  MemoryReservation: 10
+                  Cpu: 1
+                  Memory: 50
+                  MemoryReservation: 15
                   Image: !Ref DockerImage
+                  HealthCheck:
+                    Command:
+                      - wget --spider http://localhost:2020/api/v1/health || exit 1
+                    Interval: 60
+                    StartPeriod: 60
                   MountPoints:
-                      - ContainerPath: /var/run
-                        SourceVolume: socket
-                      - ContainerPath: /var/lib/docker/containers
-                        SourceVolume: containers
+                    - SourceVolume: socket_socket
+                      ContainerPath: /var/run/docker.sock
+                      ReadOnly: true
+                    - SourceVolume: docker_containers
+                      ContainerPath: /var/lib/docker/containers
+                      ReadOnly: true
+                    - SourceVolume: host_proc
+                      ContainerPath: /hostfs/proc
+                      ReadOnly: true
                   Secrets:
-                    - Name: ES_HTTP_HOST_SECRET
+                    - Name: FLB_ES_HTTP_HOST
                       ValueFrom: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:service-es:http_host::'
-                    - Name: ES_HTTP_PWD_SECRET
+                    - Name: FLB_ES_HTTP_PASSWD
                       ValueFrom: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:service-es:http_pwd::'
+                  EnvironmentFiles:
+                    - Name: !Ref FluentBeatsEnvFile
+                    - Type:  s3
+
     TaskRole:
         Type: AWS::IAM::Role
         Properties:
             RoleName: !Sub ecs-task-${AWS::StackName}
             Path: /
             AssumeRolePolicyDocument: |
-                {
-                    "Statement": [{
-                        "Sid": "",
-                        "Effect": "Allow",
-                        "Principal": { "Service": [ "ecs-tasks.amazonaws.com" ]},
-                        "Action": "sts:AssumeRole"
-                    }]
-                }
+              {
+                  "Statement": [{
+                      "Sid": "",
+                      "Effect": "Allow",
+                      "Principal": { "Service": [ "ecs-tasks.amazonaws.com" ]},
+                      "Action": "sts:AssumeRole"
+                  }]
+              }
             Policies:
-                - PolicyName: !Sub ecs-task-${AWS::StackName}
-                  PolicyDocument:
-                    {
-                        "Version": "2012-10-17",
-                        "Statement": [
-                            {
-                              "Effect": "Allow",
-                              "Action": [
-                                "secretsmanager:GetSecretValue",
-                              ],
-                              "Resource": [
-                                !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:service-es'
-                              ]
-                            }
-                        ]
-                    }
+              - PolicyName: !Sub ecs-task-${AWS::StackName}
+                PolicyDocument:
+                  {
+                      "Version": "2012-10-17",
+                      "Statement": [
+                          {
+                            "Effect": "Allow",
+                            "Action": [
+                              "secretsmanager:GetSecretValue",
+                            ],
+                            "Resource": [
+                              !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:service-es'
+                            ]
+                          }
+                      ]
+                  }
