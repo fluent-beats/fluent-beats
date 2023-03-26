@@ -2,26 +2,35 @@ echo "---------------------"
 echo "Fluent Beats"
 
 # extract_secrets (test variable to support ECS injected secrets)
-if [[ ! -n  "${FLB_ES_HTTP_HOST}" ]]; then
+if [[ ! -n "${FLB_ES_HTTP_HOST}" ]]; then
   export FLB_ES_HTTP_HOST=$(cat /run/secrets/es-host.txt)
 fi
-if [[ ! -n  "${FLB_ES_HTTP_PASSWD}" ]]; then
+if [[ ! -n "${FLB_ES_HTTP_PASSWD}" ]]; then
   export FLB_ES_HTTP_PASSWD=$(cat /run/secrets/es-pwd.txt)
 fi
 
 # setup_configs
 if [ -f "/run/configs/fluent-beats.env" ]; then
-  echo -e "\033[1;32m - Using external configs\033[0m"
+  echo -e "\033[1;32m - Using env file\033[0m"
   cat /run/configs/fluent-beats.env
   export $(grep -v '^#' /run/configs/fluent-beats.env | xargs)
 else
-  echo -e "\033[1;33m - Using hardcoded configs\033[0m"
-  export FLB_DOCKER_COLLECT_INTERVAL=10
-  export FLB_HOST_COLLECT_INTERVAL=10
-  export FLB_MEM_BUF_LIMIT=3M
-  export FLB_FORWARD_BUF_CHUNK_SIZE=1M
-  export FLB_FORWARD_BUF_MAX_SIZE=3M
-  export FLB_STORAGE_BACKLOG_MEM_LIMIT=10M
+  echo -e "\033[1;33m - Using variables configs\033[0m"
+  if [[ ! -n "${FLB_DOCKER_COLLECT_INTERVAL}" ]]; then
+    export FLB_DOCKER_COLLECT_INTERVAL=10
+  fi
+  if [[ ! -n "${FLB_MEM_BUF_LIMIT}" ]]; then
+    export FLB_MEM_BUF_LIMIT=3M
+  fi
+  if [[ ! -n "${FLB_FORWARD_BUF_CHUNK_SIZE}" ]]; then
+    export FLB_FORWARD_BUF_CHUNK_SIZE=1M
+  fi
+  if [[ ! -n "${FLB_FORWARD_BUF_MAX_SIZE}" ]]; then
+    export FLB_FORWARD_BUF_MAX_SIZE=3M
+  fi
+  if [[ ! -n "${FLB_STORAGE_BACKLOG_MEM_LIMIT}" ]]; then
+    export FLB_STORAGE_BACKLOG_MEM_LIMIT=10M
+  fi
 fi
 
 # setup_agent
