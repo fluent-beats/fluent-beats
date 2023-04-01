@@ -6,6 +6,7 @@ AGENT_NAME = 'fluent-beats'
 AGENT_ID = os.getenv('AGENT_ID')
 AGENT_HOST = os.getenv('AGENT_HOST')
 AGENT_IP = os.getenv('AGENT_IP')
+HOST_NUM_PROCS = os.getenv('HOST_NUM_PROCS')
 
 function add_ecs(input, output)
   output['ecs'] = {}
@@ -63,8 +64,12 @@ function cpu_to_ecs(input, output)
   output['system'] = {}
   output['system']['cpu'] = {}
 
-  -- todo: cores
-  output['system']['cpu']['cores'] = 8
+  -- cores
+  output['system']['cpu']['cores'] = HOST_NUM_PROCS
+
+  -- total
+  output['system']['cpu']['total'] = {}
+  output['system']['cpu']['total']['pct'] = input['cpu_p']
 
   -- system
   output['system']['cpu']['system'] = {}
@@ -82,12 +87,20 @@ function memory_to_ecs(input, output)
   output['system'] = {}
   output['system']['memory'] = {}
 
-  -- actual used
+  -- memory
+  output['system']['memory']['free'] = input['mem.free'] * 1024
+  output['system']['memory']['total'] = input['mem.total'] * 1024
+  output['system']['memory']['cached'] = input['mem.cached'] * 1024
+  output['system']['memory']['used'] = {}
+  output['system']['memory']['used']['bytes'] = input['mem.used'] * 1024
+  output['system']['memory']['used']['pct'] = (input['mem.used'] / input['mem.total']) * 100.0
+
+  -- memory actual
   output['system']['memory']['actual'] = {}
+  output['system']['memory']['actual']['free'] = input['mem.available'] * 1024
   output['system']['memory']['actual']['used'] = {}
-  output['system']['memory']['actual']['used']['bytes'] = input['mem.used'] * 1024
-  output['system']['memory']['actual']['used']['pct'] = (input['mem.used'] / input['mem.total']) * 100.0
-  output['system']['memory']['actual']['free'] = input['mem.free'] * 1024
+  output['system']['memory']['actual']['used']['bytes'] = (input['mem.total'] - input['mem.available']) * 1024
+  output['system']['memory']['actual']['used']['pct'] = ((input['mem.total'] - input['mem.available']) / input['mem.total']) * 100.0
 
   add_common(input, output, 'memory')
 end
@@ -105,6 +118,14 @@ function netif_to_ecs(input, output)
   output['system']['network']['out'] = {}
   output['system']['network']['out']['bytes'] = input['eth0.tx.bytes']
 
+  -- hosts view (new)
+  output['host'] = {}
+  output['host']['network'] = {}
+  output['host']['network']['ingress'] = {}
+  output['host']['network']['ingress']['bytes'] = input['eth0.rx.bytes']
+  output['host']['network']['egress'] = {}
+  output['host']['network']['egress']['bytes'] = input['eth0.tx.bytes']
+
   add_common(input, output, 'network')
 end
 
@@ -112,19 +133,36 @@ function load_to_ecs(input, output)
   -- ECS fields
   output['system'] = {}
   output['system']['load'] = {}
+  output['system']['load']['norm'] = {}
+
+  -- load cores
+  output['system']['load']['cores'] = HOST_NUM_PROCS
 
   -- load averages
   output['system']['load']['1'] = input['load.1']
   output['system']['load']['5'] = input['load.5']
   output['system']['load']['15'] = input['load.15']
 
+  -- load normalized averages
+  output['system']['load']['norm']['1'] = input['load.1'] / HOST_NUM_PROCS
+  output['system']['load']['norm']['5'] = input['load.5'] / HOST_NUM_PROCS
+  output['system']['load']['norm']['15'] = input['load.15'] / HOST_NUM_PROCS
+
   add_common(input, output, 'load')
+end
+
+function diskio_to_ecs(input, output)
+  -- ECS fields
+  output['system'] = {}
+  output['system']['diskio'] = {}
+  output['system']['diskio']['read'] = {}
+  output['system']['diskio'][] = {}
 end
 
 function host_metric_to_ecs(tag, timestamp, record)
   new_record = {}
 
-  -- Just the basic https://www.elastic.co/guide/en/observability/current/host-metrics.html
+  -- https://www.elastic.co/guide/en/observability/current/host-metrics.html
   if tag == 'host_cpu' then
     cpu_to_ecs(record, new_record)
   elseif tag == 'host_memory' then

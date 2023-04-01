@@ -38,6 +38,9 @@ export AGENT_ID=$(echo $RANDOM | md5sum | head -c 12)
 export AGENT_HOST=$(hostname)
 export AGENT_IP=$(hostname -i)
 
+# will always match host no matter what (eg --cpuset-cpus=)
+export HOST_NUM_PROCS=$(grep -c processor /proc/cpuinfo)
+
 echo "\n---------------------"
 # start
 exec /fluent-bit/bin/fluent-bit \
