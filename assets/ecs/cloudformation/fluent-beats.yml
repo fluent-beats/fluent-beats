@@ -8,7 +8,7 @@ Parameters:
         Description: The service Docker image.
         Type: String
     FluentBeatsEnvFile:
-        Description: Arn path to Fluent Beats env file ("arn:aws:s3:::s3_bucket_name/file_name.env").
+        Description: Arn path to Fluent Beats env file (eg. s3_bucket_name/file_name.env).
         Type: String
     Cluster:
         Description: The ECS Cluster name that this service should run on
@@ -41,7 +41,7 @@ Resources:
                     SourcePath: /proc
             ContainerDefinitions:
                 - Name: fluent-beats
-                  Essential: true
+                  Essential: false
                   Cpu: 1
                   Memory: 50
                   MemoryReservation: 15
@@ -67,7 +67,7 @@ Resources:
                     - Name: FLB_ES_HTTP_PASSWD
                       ValueFrom: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:service-es:http_pwd::'
                   EnvironmentFiles:
-                    - Name: !Ref FluentBeatsEnvFile
+                    - Name: !Sub 'arn:aws:s3:::${FluentBeatsEnvFile}'
                     - Type:  s3
 
     TaskRole:
