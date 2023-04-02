@@ -46,6 +46,7 @@ end
 function add_metric_set(input, output, name)
   output['metricset'] = {}
   output['metricset']['name'] = name
+  output['metricset']['period'] = tonumber(os.getenv('FLB_DOCKER_METRICS_INTERVAL')) * 1000
 end
 
 function add_service(input, output)
