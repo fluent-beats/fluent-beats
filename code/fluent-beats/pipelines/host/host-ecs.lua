@@ -90,7 +90,7 @@ function cpu_to_ecs(input, output)
   output['system']['cpu']['user']['pct'] = scaled * HOST_NUM_PROCS
   output['system']['cpu']['user']['norm']['pct'] = scaled
 
-  add_common(input, output, 'host_cpu')
+  add_common(input, output, 'cpu')
 end
 
 function memory_to_ecs(input, output)
@@ -113,7 +113,7 @@ function memory_to_ecs(input, output)
   output['system']['memory']['actual']['used']['bytes'] = (input['mem.total'] - input['mem.available']) * 1024
   output['system']['memory']['actual']['used']['pct'] = ((input['mem.total'] - input['mem.available']) / input['mem.total']) * 100.0
 
-  add_common(input, output, 'host_memory')
+  add_common(input, output, 'memory')
 end
 
 function netif_to_ecs(input, output)
@@ -137,7 +137,7 @@ function netif_to_ecs(input, output)
   output['host']['network']['egress'] = {}
   output['host']['network']['egress']['bytes'] = input['eth0.tx.bytes']
 
-  add_common(input, output, 'host_network')
+  add_common(input, output, 'network')
 end
 
 function load_to_ecs(input, output)
@@ -159,7 +159,7 @@ function load_to_ecs(input, output)
   output['system']['load']['norm']['5'] = input['load.5'] / HOST_NUM_PROCS
   output['system']['load']['norm']['15'] = input['load.15'] / HOST_NUM_PROCS
 
-  add_common(input, output, 'host_load')
+  add_common(input, output, 'load')
 end
 
 function diskio_to_ecs(input, output)
