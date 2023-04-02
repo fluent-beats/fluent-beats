@@ -28,9 +28,12 @@
  service.address                   | Address where data about this service was collected from. This should be a URI, network address (ipv4:port or [ipv6]:port) or a resource path (sockets).                                                                                                                             | keyword          |         |
  service.type                      | The type of the service data is collected from. The type can be used to group and correlate logs and metrics from one service type. Example: If logs or metrics are collected from Elasticsearch, service.type would be elasticsearch.                                                         | keyword          |         |
  system.cpu.cores                  | The number of CPU cores present on the host                                                        | long             |         |
- system.cpu.system.pct             | The percentage of CPU time spent in kernel space.                                                  | scaled_float     | percent | gauge
- system.cpu.total.pct              | The percentage of CPU time spent in states other than Idle and IOWait                              | scaled_float     | percent | gauge
- system.cpu.user.pct               | The percentage of CPU time spent in user space. On multi-core systems, you can have percentages that are greater than 100%. For example, if 3 cores are at 60% use, then the system.cpu.user.pct will be 180%                                                                                  | scaled_float     | percent | gauge
+ system.cpu.system.pct             | The percentage of CPU time spent in kernel space. On multi-core systems, values can be greater than 100%.                                                                                                                                  | scaled_float     | percent | gauge
+ system.cpu.system.norm.pct        | The percentage of CPU time spent in kernel space / host CPU cores (max 100%)                       | scaled_float     | percent | gauge
+ system.cpu.total.pct              | The percentage of CPU time spent in states other than Idle and IOWait. On multi-core systems, values can be greater than 100%.                                                                                                                                  | scaled_float     | percent | gauge
+ system.cpu.total.norm.pct         | The percentage of CPU time spent in states other than Idle and IOWait / host CPU cores (max 100%)  | scaled_float     | percent | gauge
+ system.cpu.user.pct               | The percentage of CPU time spent in user space. On multi-core systems, values can be greater than 100%.                                                                                                                                  | scaled_float     | percent | gauge
+ system.cpu.user.norm.pct          | The percentage of CPU time spent in user space / host CPU cores (max 100%)                         | scaled_float     | percent | gauge
 ## Memory
 ### Exported fields
 
