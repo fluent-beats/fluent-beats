@@ -46,6 +46,7 @@ end
 function add_metric_set(input, output, name)
   output['metricset'] = {}
   output['metricset']['name'] = name
+  output['metricset']['period'] = tonumber(os.getenv('FLB_DOCKER_METRICS_INTERVAL')) * 1000
 end
 
 function add_service(input, output)
@@ -82,7 +83,7 @@ function image_info(input)
   output['container']['image']['name'] = input['Config']['Image']
 
   -- ECS fields
-  add_common(input, output, 'image')
+  add_common(input, output, 'docker_image')
   return output
 end
 
@@ -116,7 +117,7 @@ function container_info(input)
   output['docker']['container']['size']['rw'] = input['SizeRw']
 
   -- ECS fields
-  add_common(input, output, 'container')
+  add_common(input, output, 'docker_container')
   return output
 end
 
@@ -141,7 +142,7 @@ function health_info(input)
   end
 
   -- ECS fields
-  add_common(input, output, 'healthcheck')
+  add_common(input, output, 'docker_healthcheck')
   return output
 end
 
@@ -151,6 +152,7 @@ function docker_info_to_ecs(tag, timestamp, record)
 
   table.insert(new_records, container_info(record))
   table.insert(new_records, image_info(record))
+
   -- check piechart 'agent.id' vs 'container.id'
   table.insert(new_records, health_info(record))
 

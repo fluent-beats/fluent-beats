@@ -90,7 +90,7 @@ function system_info(input)
   output['docker']['info']['containers']['stopped'] = input['ContainersStopped']
 
   -- ECS fields
-  add_common(input, output, 'info')
+  add_common(input, output, 'docker_info')
   return output
 end
 
