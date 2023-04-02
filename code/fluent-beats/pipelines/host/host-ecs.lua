@@ -6,7 +6,7 @@ AGENT_NAME = 'fluent-beats'
 AGENT_ID = os.getenv('AGENT_ID')
 AGENT_HOST = os.getenv('AGENT_HOST')
 AGENT_IP = os.getenv('AGENT_IP')
-HOST_NUM_PROCS = os.getenv('HOST_NUM_PROCS')
+HOST_NUM_PROCS = tonumber(os.getenv('HOST_NUM_PROCS'))
 
 function add_ecs(input, output)
   output['ecs'] = {}
@@ -29,7 +29,7 @@ function add_agent(input, output)
 end
 
 function add_host(input, output)
-  output['host'] = {}
+  output['host'] = output['host'] or {}
   output['host']['name'] = AGENT_HOST
   output['host']['ip'] = AGENT_IP
   -- required for ML features
@@ -47,6 +47,7 @@ end
 function add_metric_set(input, output, name)
   output['metricset'] = {}
   output['metricset']['name'] = name
+  output['metricset']['period'] = tonumber(os.getenv('FLB_HOST_METRICS_INTERVAL')) * 1000
 end
 
 function add_common(input, output, info)
@@ -126,7 +127,7 @@ function netif_to_ecs(input, output)
   output['host']['network']['egress'] = {}
   output['host']['network']['egress']['bytes'] = input['eth0.tx.bytes']
 
-  add_common(input, output, 'network')
+  add_common(input, output, 'netif')
 end
 
 function load_to_ecs(input, output)
@@ -153,10 +154,12 @@ end
 
 function diskio_to_ecs(input, output)
   -- ECS fields
+
+  -- https://github.com/elastic/beats/blob/main/metricbeat/module/system/diskio/diskio.go
   output['system'] = {}
   output['system']['diskio'] = {}
   output['system']['diskio']['read'] = {}
-  output['system']['diskio'][] = {}
+  output['system']['diskio']['write'] = {}
 end
 
 function host_metric_to_ecs(tag, timestamp, record)
