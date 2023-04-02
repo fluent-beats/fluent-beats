@@ -6,6 +6,9 @@
 # Metricsets
 
 ## CPU
+
+> `metricset.name: host_cpu`
+
 ### Exported fields
 
  Field                             | Description                                                                                        | Type             | Unit    | Metric Type
@@ -35,6 +38,9 @@
  system.cpu.user.pct               | The percentage of CPU time spent in user space. On multi-core systems, values can be greater than 100%.                                                                                                                                  | scaled_float     | percent | gauge
  system.cpu.user.norm.pct          | The percentage of CPU time spent in user space / host CPU cores (max 100%)                         | scaled_float     | percent | gauge
 ## Memory
+
+> `metricset.name: host_memory`
+
 ### Exported fields
 
  Field                             | Description                                                                                        | Type             | Unit    | Metric Type
@@ -66,6 +72,9 @@
  system.memory.used.pct            | The percentage of used memory.                                                                     | scaled_float     | percent | gauge
 
 ## Network
+
+> `metricset.name: host_network`
+
 ### Exported fields
 
  Field                             | Description                                                                                        | Type             | Unit    | Metric Type
@@ -92,7 +101,10 @@
  system.network.in.bytes           | The number of bytes received.                                                                      | long             | bytes   | gauge
  system.network.out.bytes          | The number of bytes sent.                                                                          | long             | bytes   | gauge
 
- ## Load
+## Load
+
+ > `metricset.name: host_load`
+
 ### Exported fields
 
  Field                             | Description                                                                                        | Type             | Unit    | Metric Type

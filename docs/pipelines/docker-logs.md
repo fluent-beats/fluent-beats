@@ -42,6 +42,9 @@ FluentD log driver should use the tag `logs`, to match the internal pipeline tag
 ```
 
 ## Logs
+
+> `metricset.name: docker_log`
+
 ### Exported fields
 
  Field                           | Description                                                                                    | Type

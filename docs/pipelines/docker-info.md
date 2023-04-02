@@ -9,7 +9,7 @@
 
 The Docker container data stream collects information and statistics about running Docker containers.
 
-> `metricset.name: container`
+> `metricset.name: docker_container`
 
 ### Exported fields
 
@@ -53,7 +53,7 @@ The Docker healthcheck data stream collects healthcheck status metrics about run
 
 Healthcheck data will only be available from Docker containers where the Docker `HEALTHCHECK` instruction has been used to build the Docker image.
 
-> `metricset.name: healthcheck`
+> `metricset.name: docker_healthcheck`
 
 ### Exported fields
 
@@ -89,7 +89,7 @@ Healthcheck data will only be available from Docker containers where the Docker 
 
 The Docker image data stream collects metrics on docker images
 
-> `metricset.name: image`
+> `metricset.name: docker_image`
 
 ### Exported fields
 

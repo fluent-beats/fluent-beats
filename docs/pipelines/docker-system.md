@@ -9,7 +9,7 @@
 
 The Docker info data stream collects system-wide information.
 
-> `metricset.name: info`
+> `metricset.name: docker_info`
 
 ### Exported fields
 
