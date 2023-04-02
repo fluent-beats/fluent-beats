@@ -16,8 +16,11 @@ if [ -f "/run/configs/fluent-beats.env" ]; then
   export $(grep -v '^#' /run/configs/fluent-beats.env | xargs)
 else
   echo -e "\033[1;33m - Using variables configs\033[0m"
-  if [[ ! -n "${FLB_DOCKER_COLLECT_INTERVAL}" ]]; then
-    export FLB_DOCKER_COLLECT_INTERVAL=10
+  if [[ ! -n "${FLB_DOCKER_METRICS_INTERVAL}" ]]; then
+    export FLB_DOCKER_METRICS_INTERVAL=10
+  fi
+    if [[ ! -n "${FLB_HOST_METRICS_INTERVAL}" ]]; then
+    export FLB_HOST_METRICS_INTERVAL=10
   fi
   if [[ ! -n "${FLB_MEM_BUF_LIMIT}" ]]; then
     export FLB_MEM_BUF_LIMIT=3M
