@@ -70,21 +70,21 @@ function cpu_to_ecs(input, output)
 
   -- in_cpu returns normalized values (pct / cores)
   -- total
-  scaled = tonumber(string.format("%.2f", input['cpu_p']))
+  scaled = input['cpu_p'] * 0.1
   output['system']['cpu']['total'] = {}
   output['system']['cpu']['total']['norm'] = {}
   output['system']['cpu']['total']['pct'] = scaled * HOST_NUM_PROCS
   output['system']['cpu']['total']['norm']['pct'] = scaled
 
   -- system
-  scaled = tonumber(string.format("%.2f", input['system_p']))
+  scaled = input['system_p'] * 0.1
   output['system']['cpu']['system'] = {}
   output['system']['cpu']['system']['norm'] = {}
   output['system']['cpu']['system']['pct'] = scaled * HOST_NUM_PROCS
   output['system']['cpu']['system']['norm']['pct'] = scaled
 
   -- user
-  scaled = tonumber(string.format("%.2f", input['user_p']))
+  scaled = input['user_p'] * 0.1
   output['system']['cpu']['user'] = {}
   output['system']['cpu']['user']['norm'] = {}
   output['system']['cpu']['user']['pct'] = scaled * HOST_NUM_PROCS
@@ -104,14 +104,14 @@ function memory_to_ecs(input, output)
   output['system']['memory']['cached'] = input['mem.cached'] * 1024
   output['system']['memory']['used'] = {}
   output['system']['memory']['used']['bytes'] = input['mem.used'] * 1024
-  output['system']['memory']['used']['pct'] = (input['mem.used'] / input['mem.total']) * 100.0
+  output['system']['memory']['used']['pct'] = (input['mem.used'] / input['mem.total']) * 0.1
 
   -- memory actual
   output['system']['memory']['actual'] = {}
   output['system']['memory']['actual']['free'] = input['mem.available'] * 1024
   output['system']['memory']['actual']['used'] = {}
   output['system']['memory']['actual']['used']['bytes'] = (input['mem.total'] - input['mem.available']) * 1024
-  output['system']['memory']['actual']['used']['pct'] = ((input['mem.total'] - input['mem.available']) / input['mem.total']) * 100.0
+  output['system']['memory']['actual']['used']['pct'] = ((input['mem.total'] - input['mem.available']) / input['mem.total']) * 0.1
 
   add_common(input, output, 'memory')
 end

@@ -31,12 +31,13 @@
  service.address                   | Address where data about this service was collected from. This should be a URI, network address (ipv4:port or [ipv6]:port) or a resource path (sockets).                                                                                                                             | keyword          |         |
  service.type                      | The type of the service data is collected from. The type can be used to group and correlate logs and metrics from one service type. Example: If logs or metrics are collected from Elasticsearch, service.type would be elasticsearch.                                                         | keyword          |         |
  system.cpu.cores                  | The number of CPU cores present on the host                                                        | long             |         |
- system.cpu.system.pct             | The percentage of CPU time spent in kernel space. On multi-core systems, values can be greater than 100%.                                                                                                                                  | scaled_float     | percent | gauge
- system.cpu.system.norm.pct        | The percentage of CPU time spent in kernel space / host CPU cores (max 100%)                       | scaled_float     | percent | gauge
- system.cpu.total.pct              | The percentage of CPU time spent in states other than Idle and IOWait. On multi-core systems, values can be greater than 100%.                                                                                                                                  | scaled_float     | percent | gauge
- system.cpu.total.norm.pct         | The percentage of CPU time spent in states other than Idle and IOWait / host CPU cores (max 100%)  | scaled_float     | percent | gauge
- system.cpu.user.pct               | The percentage of CPU time spent in user space. On multi-core systems, values can be greater than 100%.                                                                                                                                  | scaled_float     | percent | gauge
- system.cpu.user.norm.pct          | The percentage of CPU time spent in user space / host CPU cores (max 100%)                         | scaled_float     | percent | gauge
+ system.cpu.system.pct             | The percentage of CPU time spent in kernel space. On multi-core systems, values can be greater than 100%.                                                                                                                                  | scaled_float     |         |
+ system.cpu.system.norm.pct        | The percentage of CPU time spent in kernel space divided by the number of cores                    | scaled_float     | percent | gauge
+ system.cpu.total.pct              | The percentage of CPU time spent in states other than Idle and IOWait. On multi-core systems, values can be greater than 100%.                                                                                                                                  | scaled_float     |         |
+ system.cpu.total.norm.pct         | The percentage of CPU time spent in states other than Idle and IOWait divided by the number of cores
+                                                                                                                                        | scaled_float     | percent | gauge
+ system.cpu.user.pct               | The percentage of CPU time spent in user space. On multi-core systems, values can be greater than 100%.                                                                                                                                  | scaled_float     |         |
+ system.cpu.user.norm.pct          | The percentage of CPU time spent in user space divided by the number of cores                      | scaled_float     | percent | gauge
 ## Memory
 
 > `metricset.name: host_memory`
@@ -127,10 +128,10 @@
  service.address                   | Address where data about this service was collected from. This should be a URI, network address (ipv4:port or [ipv6]:port) or a resource path (sockets).                                                                                                                             | keyword          |         |
  service.type                      | The type of the service data is collected from. The type can be used to group and correlate logs and metrics from one service type. Example: If logs or metrics are collected from Elasticsearch, service.type would be elasticsearch.                                                         | keyword          |         |
  system.memory.free                | The total amount of free memory in bytes. This value does not include memory consumed by system caches and buffers (see system.memory.actual.free).                                                                                         | long     | bytes | gauge
- system.load.1                     | Load average for the last minute.                                                                  | scaled_float     |         |
- system.load.5                     | Load average for the 5 minutes.                                                                    | scaled_float     |         |
- system.load.15                    | Load average for the 15 minutes.                                                                   | scaled_float     |         |
+ system.load.1                     | Load average for the last minute.                                                                  | scaled_float     | percent | gauge
+ system.load.5                     | Load average for the 5 minutes.                                                                    | scaled_float     | percent | gauge
+ system.load.15                    | Load average for the 15 minutes.                                                                   | scaled_float     | percent | gauge
  system.load.cores                 | The number of CPU cores present on the host.                                                       | long             |         |
- system.load.norm.1                | Load for the last minute divided by the number of cores.                                           | scaled_float     |         |
- system.load.norm.5                | Load for the 5 minutes divided by the number of cores.                                             | scaled_float     |         |
- system.load.norm.15               | Load for the 15 minutes divided by the number of cores.                                            | scaled_float     |         |
+ system.load.norm.1                | Load for the last minute divided by the number of cores.                                           | scaled_float     | percent | gauge
+ system.load.norm.5                | Load for the 5 minutes divided by the number of cores.                                             | scaled_float     | percent | gauge
+ system.load.norm.15               | Load for the 15 minutes divided by the number of cores.                                            | scaled_float     | percent | gauge
