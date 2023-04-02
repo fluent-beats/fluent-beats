@@ -68,19 +68,26 @@ function cpu_to_ecs(input, output)
   -- cores
   output['system']['cpu']['cores'] = HOST_NUM_PROCS
 
+  -- in_cpu returns normalized values (pct / cores)
   -- total
   output['system']['cpu']['total'] = {}
-  output['system']['cpu']['total']['pct'] = input['cpu_p']
+  output['system']['cpu']['total']['norm'] = {}
+  output['system']['cpu']['total']['pct'] = input['cpu_p'] * HOST_NUM_PROCS
+  output['system']['cpu']['total']['norm']['pct'] = input['cpu_p']
 
   -- system
   output['system']['cpu']['system'] = {}
-  output['system']['cpu']['system']['pct'] = input['system_p']
+  output['system']['cpu']['system']['norm'] = {}
+  output['system']['cpu']['system']['pct'] = input['system_p'] * HOST_NUM_PROCS
+  output['system']['cpu']['system']['norm']['pct'] = input['system_p']
 
   -- user
   output['system']['cpu']['user'] = {}
-  output['system']['cpu']['user']['pct'] = input['user_p']
+  output['system']['cpu']['user']['norm'] = {}
+  output['system']['cpu']['user']['pct'] = input['user_p'] * HOST_NUM_PROCS
+  output['system']['cpu']['user']['norm']['pct'] = input['user_p']
 
-  add_common(input, output, 'cpu')
+  add_common(input, output, 'host_cpu')
 end
 
 function memory_to_ecs(input, output)
@@ -103,7 +110,7 @@ function memory_to_ecs(input, output)
   output['system']['memory']['actual']['used']['bytes'] = (input['mem.total'] - input['mem.available']) * 1024
   output['system']['memory']['actual']['used']['pct'] = ((input['mem.total'] - input['mem.available']) / input['mem.total']) * 100.0
 
-  add_common(input, output, 'memory')
+  add_common(input, output, 'host_memory')
 end
 
 function netif_to_ecs(input, output)
@@ -127,7 +134,7 @@ function netif_to_ecs(input, output)
   output['host']['network']['egress'] = {}
   output['host']['network']['egress']['bytes'] = input['eth0.tx.bytes']
 
-  add_common(input, output, 'netif')
+  add_common(input, output, 'host_network')
 end
 
 function load_to_ecs(input, output)
@@ -149,7 +156,7 @@ function load_to_ecs(input, output)
   output['system']['load']['norm']['5'] = input['load.5'] / HOST_NUM_PROCS
   output['system']['load']['norm']['15'] = input['load.15'] / HOST_NUM_PROCS
 
-  add_common(input, output, 'load')
+  add_common(input, output, 'host_load')
 end
 
 function diskio_to_ecs(input, output)
