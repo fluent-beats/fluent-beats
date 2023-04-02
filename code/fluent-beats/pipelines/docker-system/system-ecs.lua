@@ -45,7 +45,7 @@ end
 
 function add_metric_set(input, output, name)
   output['metricset'] = {}
-  output['metricset']['name'] = name
+  output['metricset']['name'] = MODULE_NAME .. '_' .. name
   output['metricset']['period'] = tonumber(os.getenv('FLB_DOCKER_METRICS_INTERVAL')) * 1000
 end
 
@@ -90,7 +90,7 @@ function system_info(input)
   output['docker']['info']['containers']['stopped'] = input['ContainersStopped']
 
   -- ECS fields
-  add_common(input, output, 'docker_info')
+  add_common(input, output, 'info')
   return output
 end
 

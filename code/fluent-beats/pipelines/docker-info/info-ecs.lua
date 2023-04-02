@@ -45,7 +45,7 @@ end
 
 function add_metric_set(input, output, name)
   output['metricset'] = {}
-  output['metricset']['name'] = name
+  output['metricset']['name'] = MODULE_NAME .. '_' .. name
   output['metricset']['period'] = tonumber(os.getenv('FLB_DOCKER_METRICS_INTERVAL')) * 1000
 end
 
@@ -83,7 +83,7 @@ function image_info(input)
   output['container']['image']['name'] = input['Config']['Image']
 
   -- ECS fields
-  add_common(input, output, 'docker_image')
+  add_common(input, output, 'image')
   return output
 end
 
@@ -117,7 +117,7 @@ function container_info(input)
   output['docker']['container']['size']['rw'] = input['SizeRw']
 
   -- ECS fields
-  add_common(input, output, 'docker_container')
+  add_common(input, output, 'container')
   return output
 end
 
@@ -142,7 +142,7 @@ function health_info(input)
   end
 
   -- ECS fields
-  add_common(input, output, 'docker_healthcheck')
+  add_common(input, output, 'healthcheck')
   return output
 end
 

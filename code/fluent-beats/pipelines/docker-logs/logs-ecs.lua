@@ -94,7 +94,7 @@ function fluentd_to_ecs(tag, timestamp, record)
   add_log(record, new_record)
 
   -- ECS fields
-  add_common(record, new_record, 'docker_log')
+  add_common(record, new_record, 'log')
 
   return 2, timestamp, new_record
 end

@@ -46,7 +46,7 @@ end
 
 function add_metric_set(input, output, name)
   output['metricset'] = {}
-  output['metricset']['name'] = name
+  output['metricset']['name'] = MODULE_NAME .. '_' .. name
   output['metricset']['period'] = tonumber(os.getenv('FLB_HOST_METRICS_INTERVAL')) * 1000
 end
 
@@ -70,22 +70,25 @@ function cpu_to_ecs(input, output)
 
   -- in_cpu returns normalized values (pct / cores)
   -- total
+  scaled = tonumber(string.format("%.2f", input['cpu_p']))
   output['system']['cpu']['total'] = {}
   output['system']['cpu']['total']['norm'] = {}
-  output['system']['cpu']['total']['pct'] = input['cpu_p'] * HOST_NUM_PROCS
-  output['system']['cpu']['total']['norm']['pct'] = input['cpu_p']
+  output['system']['cpu']['total']['pct'] = scaled * HOST_NUM_PROCS
+  output['system']['cpu']['total']['norm']['pct'] = scaled
 
   -- system
+  scaled = tonumber(string.format("%.2f", input['system_p']))
   output['system']['cpu']['system'] = {}
   output['system']['cpu']['system']['norm'] = {}
-  output['system']['cpu']['system']['pct'] = input['system_p'] * HOST_NUM_PROCS
-  output['system']['cpu']['system']['norm']['pct'] = input['system_p']
+  output['system']['cpu']['system']['pct'] = scaled * HOST_NUM_PROCS
+  output['system']['cpu']['system']['norm']['pct'] = scaled
 
   -- user
+  scaled = tonumber(string.format("%.2f", input['user_p']))
   output['system']['cpu']['user'] = {}
   output['system']['cpu']['user']['norm'] = {}
-  output['system']['cpu']['user']['pct'] = input['user_p'] * HOST_NUM_PROCS
-  output['system']['cpu']['user']['norm']['pct'] = input['user_p']
+  output['system']['cpu']['user']['pct'] = scaled * HOST_NUM_PROCS
+  output['system']['cpu']['user']['norm']['pct'] = scaled
 
   add_common(input, output, 'host_cpu')
 end

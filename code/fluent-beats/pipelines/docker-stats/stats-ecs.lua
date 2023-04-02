@@ -45,7 +45,7 @@ end
 
 function add_metric_set(input, output, name)
   output['metricset'] = {}
-  output['metricset']['name'] = name
+  output['metricset']['name'] = MODULE_NAME .. '_' .. name
   output['metricset']['period'] = tonumber(os.getenv('FLB_DOCKER_METRICS_INTERVAL')) * 1000
 end
 
@@ -185,7 +185,7 @@ function cpu_stats(input)
   output['container'] = {}
   output['container']['cpu'] = {}
   output['container']['cpu']['usage'] = output['docker']['cpu']['total']['norm']['pct']
-  add_common(input, output, 'docker_cpu')
+  add_common(input, output, 'cpu')
 
   return output
 end
@@ -244,7 +244,7 @@ function memory_stats(input)
   end
 
    -- ECS fields
-  add_common(input, output, 'docker_memory')
+  add_common(input, output, 'memory')
 
   return output
 end
@@ -272,7 +272,7 @@ function disk_stats(input)
   output['container']['disk']['write'] = {}
   output['container']['disk']['read']['bytes'] = output['docker']['diskio']['read']['bytes']
   output['container']['disk']['write']['bytes'] = output['docker']['diskio']['write']['bytes']
-  add_common(input, output, 'docker_disk')
+  add_common(input, output, 'disk')
 
   return output
 end
@@ -317,7 +317,7 @@ function network_stats(input)
   output['container']['network']['ingress'] = {}
   output['container']['network']['egress']['bytes'] = output['docker']['network']['out']['bytes']
   output['container']['network']['ingress']['bytes'] = output['docker']['network']['in']['bytes']
-  add_common(input, output, 'docker_network')
+  add_common(input, output, 'network')
 
   return output
 end
