@@ -185,16 +185,6 @@ function load_to_ecs(input, output)
   add_common(input, output, 'load')
 end
 
-function diskio_to_ecs(input, output)
-  -- ECS fields
-
-  -- https://github.com/elastic/beats/blob/main/metricbeat/module/system/diskio/diskio.go
-  output['system'] = {}
-  output['system']['diskio'] = {}
-  output['system']['diskio']['read'] = {}
-  output['system']['diskio']['write'] = {}
-end
-
 function host_metric_to_ecs(tag, timestamp, record)
   new_record = {}
 
