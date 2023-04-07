@@ -70,6 +70,10 @@ function cpu_to_ecs(input, output)
   output['system']['cpu']['cores'] = HOST_NUM_PROCS
 
   -- in_cpu returns normalized values (pct / cores)
+  --   adjust input to be scaled percent (1.0 -> 0.0)
+  --   for 'pct' undo (scaled / cores)
+  --   for 'norm' just use scaled
+
   -- total
   scaled = input['cpu_p'] * 0.01
   output['system']['cpu']['total'] = {}
@@ -92,6 +96,24 @@ function cpu_to_ecs(input, output)
   output['system']['cpu']['user']['norm']['pct'] = scaled
 
   add_common(input, output, 'cpu')
+end
+
+function disk_to_ecs(input, output)
+  -- ECS fields
+  output['system'] = {}
+  output['system']['diskio'] = {}
+
+  -- in_disk returns (sectors * standard UNIX 512-byte sectors size)
+  --   input will exact match ECS read/write bytes
+
+  --read
+  output['system']['diskio']['read'] = {}
+  output['system']['diskio']['read']['bytes'] = input['read_size']
+
+  output['system']['diskio']['write'] = {}
+  output['system']['diskio']['write']['bytes'] = input['write_size']
+
+  add_common(input, output, 'disk')
 end
 
 function memory_to_ecs(input, output)
@@ -179,6 +201,8 @@ function host_metric_to_ecs(tag, timestamp, record)
   -- https://www.elastic.co/guide/en/observability/current/host-metrics.html
   if tag == 'host_cpu' then
     cpu_to_ecs(record, new_record)
+  elseif tag == 'host_disk' then
+    disk_to_ecs(record, new_record)
   elseif tag == 'host_memory' then
     memory_to_ecs(record, new_record)
   elseif tag == 'host_netif' then

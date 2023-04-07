@@ -17,6 +17,7 @@ download_plugins() {
   get_input_plugin 'docker-stats' 'docker_stats' 'v1.0.0'
   get_input_plugin 'docker-info' 'docker_info' 'v1.0.0'
   get_input_plugin 'docker-system' 'docker_system' 'v1.0.0'
+  get_input_plugin 'diskinfo' 'diskinfo' 'v1.0.0'
   get_input_plugin 'meminfo' 'meminfo' 'v1.1.0'
   get_input_plugin 'netinfo' 'netinfo' 'v1.0.0'
   get_input_plugin 'load' 'load' 'v1.0.0'
