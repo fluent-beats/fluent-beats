@@ -49,7 +49,7 @@ RUN             cmake \
                       -DFLB_TLS=On \
 # input plugins
                       -DFLB_IN_COLLECTD=Off \
-                      #-DFLB_IN_CPU=On \
+                      -DFLB_IN_CPU=Off \
                       -DFLB_IN_DISK=Off \
                       -DFLB_IN_DOCKER=Off \
                       -DFLB_IN_DOCKER_EVENTS=Off \
