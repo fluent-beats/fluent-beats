@@ -25,7 +25,7 @@ download_plugins() {
 }
 
 run() {
-  docker build -f Dockerfile -t fluent-beats/fluent-beats
+  docker build -f Dockerfile -t fluent-beats/fluent-beats .
 }
 
 download_plugins && run
