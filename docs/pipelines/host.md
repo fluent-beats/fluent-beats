@@ -41,7 +41,7 @@
 
 ---
 
-## DiskIO
+## Disk IO
 
 > `metricset.name: host_disk`
 

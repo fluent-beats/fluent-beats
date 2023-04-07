@@ -56,7 +56,7 @@ The Docker cpu data stream collects runtime CPU metrics.
 
 ---
 
-## Diskio
+## Disk IO
 
 The Docker diskio data stream collects disk I/O metrics.
 > `metricset.name: docker_disk`
