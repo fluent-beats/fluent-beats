@@ -64,7 +64,7 @@ RUN             cmake \
                       -DFLB_IN_KMSG=Off \
                       -DFLB_IN_MEM=Off \
                       -DFLB_IN_MQTT=Off \
-                      #-DFLB_IN_NETIF=On \
+                      -DFLB_IN_NETIF=Off \
                       -DFLB_IN_NODE_EXPORTER_METRICS=Off \
                       -DFLB_IN_PROC=Off \
                       -DFLB_IN_RANDOM=Off \

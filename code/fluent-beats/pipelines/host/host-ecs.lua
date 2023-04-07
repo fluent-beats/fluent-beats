@@ -6,6 +6,7 @@ AGENT_NAME = 'fluent-beats'
 AGENT_ID = os.getenv('AGENT_ID')
 AGENT_HOST = os.getenv('AGENT_HOST')
 AGENT_IP = os.getenv('AGENT_IP')
+HOST_NETIF = os.getenv('FLB_HOST_NET_INTERFACE')
 HOST_NUM_PROCS = tonumber(os.getenv('HOST_NUM_PROCS'))
 
 function add_ecs(input, output)
@@ -123,19 +124,19 @@ function netif_to_ecs(input, output)
 
   -- in bytes
   output['system']['network']['in'] = {}
-  output['system']['network']['in']['bytes'] = input['eth0.rx.bytes']
+  output['system']['network']['in']['bytes'] = input[HOST_NETIF .. '.rx.bytes']
 
   -- out bytes
   output['system']['network']['out'] = {}
-  output['system']['network']['out']['bytes'] = input['eth0.tx.bytes']
+  output['system']['network']['out']['bytes'] = input[HOST_NETIF .. '.tx.bytes']
 
   -- hosts view (new)
   output['host'] = {}
   output['host']['network'] = {}
   output['host']['network']['ingress'] = {}
-  output['host']['network']['ingress']['bytes'] = input['eth0.rx.bytes']
+  output['host']['network']['ingress']['bytes'] = input[HOST_NETIF .. '.rx.bytes']
   output['host']['network']['egress'] = {}
-  output['host']['network']['egress']['bytes'] = input['eth0.tx.bytes']
+  output['host']['network']['egress']['bytes'] = input[HOST_NETIF .. '.tx.bytes']
 
   add_common(input, output, 'network')
 end

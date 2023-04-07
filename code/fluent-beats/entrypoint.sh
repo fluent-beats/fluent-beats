@@ -34,6 +34,9 @@ else
   if [[ ! -n "${FLB_STORAGE_BACKLOG_MEM_LIMIT}" ]]; then
     export FLB_STORAGE_BACKLOG_MEM_LIMIT=10M
   fi
+  if [[ ! -n "${FLB_HOST_NET_INTERFACE}" ]]; then
+    export FLB_HOST_NET_INTERFACE=eth0
+  fi
 fi
 
 # setup_agent
@@ -53,4 +56,5 @@ exec /fluent-bit/bin/fluent-bit \
 -e /fluent-bit/bin/flb-in_docker_info.so \
 -e /fluent-bit/bin/flb-in_docker_system.so \
 -e /fluent-bit/bin/flb-in_meminfo.so \
+-e /fluent-bit/bin/flb-in_netinfo.so \
 -e /fluent-bit/bin/flb-in_load.so \
