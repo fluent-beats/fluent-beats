@@ -7,7 +7,7 @@
 
 ## CPU
 
-The Docker cpu data stream collects runtime CPU metrics.
+Docker data stream that collects runtime CPU metrics.
 
 > `metricset.name: docker_cpu`
 
@@ -58,7 +58,8 @@ The Docker cpu data stream collects runtime CPU metrics.
 
 ## Disk IO
 
-The Docker diskio data stream collects disk I/O metrics.
+Docker data stream that collects disk I/O metrics.
+
 > `metricset.name: docker_disk`
 
 ### Exported fields
@@ -104,7 +105,7 @@ The Docker diskio data stream collects disk I/O metrics.
 
 ## Memory
 
-The Docker memory data stream collects memory metrics from docker.
+Docker data stream that collects memory metrics.
 
 > `metricset.name: docker_memory`
 
@@ -150,7 +151,7 @@ The Docker memory data stream collects memory metrics from docker.
 
 ## Network
 
-The Docker network data stream collects network metrics.
+Docker data stream that collects network metrics.
 
 > `metricset.name: docker_network`
 

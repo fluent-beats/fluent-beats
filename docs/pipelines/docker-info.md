@@ -7,7 +7,7 @@
 
 ## Container
 
-The Docker container data stream collects information and statistics about running Docker containers.
+Docker data stream that collects info about containers.
 
 > `metricset.name: docker_container`
 
@@ -49,7 +49,7 @@ The Docker container data stream collects information and statistics about runni
 
 ## Healthcheck
 
-The Docker healthcheck data stream collects healthcheck status metrics about running Docker containers.
+Docker data stream that collects healthcheck from containers.
 
 Healthcheck data will only be available from Docker containers where the Docker `HEALTHCHECK` instruction has been used to build the Docker image.
 
@@ -87,7 +87,7 @@ Healthcheck data will only be available from Docker containers where the Docker 
 
 ## Image
 
-The Docker image data stream collects metrics on docker images
+Docker data stream that collects info about images.
 
 > `metricset.name: docker_image`
 

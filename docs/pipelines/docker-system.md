@@ -7,7 +7,7 @@
 
 ## Info
 
-The Docker info data stream collects system-wide information.
+Docker data stream that collects system-wide information.
 
 > `metricset.name: docker_info`
 

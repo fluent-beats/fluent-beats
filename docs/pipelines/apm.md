@@ -19,6 +19,8 @@ The pipeline supports the following `statsd` datagram formats:
 
 ## APM
 
+Data stream that collects custom metrics for system/service.
+
 ### Exported fields
 
  Field                           | Description                                                                                    | Type

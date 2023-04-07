@@ -7,6 +7,8 @@
 
 ## CPU
 
+Host data stream that collects CPU metrics.
+
 > `metricset.name: host_cpu`
 
 ### Exported fields
@@ -43,6 +45,8 @@
 
 ## Disk IO
 
+Host data stream that collects disk I/O metrics.
+
 > `metricset.name: host_disk`
 
  Field                             | Description                                                                                        | Type             | Unit    | Metric Type
@@ -70,6 +74,8 @@
 ---
 
 ## Memory
+
+Host data stream that collects memory metrics.
 
 > `metricset.name: host_memory`
 
@@ -107,6 +113,8 @@
 
 ## Network
 
+Host data stream that collects network metrics.
+
 > `metricset.name: host_network`
 
 ### Exported fields
@@ -138,6 +146,8 @@
 ---
 
 ## Load
+
+Host data stream that collects system load metrics.
 
  > `metricset.name: host_load`
 
