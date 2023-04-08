@@ -171,17 +171,15 @@ function health_to_heartbeat(input)
 
   -- state
   output['state'] = {}
-  output['state']['id'] = 'default-' .. monitor_id
   output['state']['status'] = output['monitor']['status']
-  if input['State']['Health'] then
-    lastEvent = #(input['State']['Health']['Log']) - 1
-    output['state']['started_at'] = input['State']['Health']['Log'][lastEvent]['Start']
-  end
+  output['state']['up'] = (output['monitor']['status'] == 'up' and 1 or 0)
+  output['state']['down'] = (output['monitor']['status'] ~= 'up' and 1 or 0)
+  output['state']['id'] = 'default-' .. monitor_id
 
   -- summary
   output['summary'] = {}
-  output['summary']['up'] = (input['State']['Status'] == 'running' and 1 or 0)
-  output['summary']['down'] = (input['State']['Status'] ~= 'running' and 1 or 0)
+  output['summary']['up'] = output['state']['up']
+  output['summary']['down'] = output['state']['down']
 
   -- url (uses fake port)
   output['url'] = {}
