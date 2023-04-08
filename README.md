@@ -35,20 +35,11 @@
 - Observability
   - Infrastructure
     - Inventory
-      - Hosts
-      - Containers
+      - AWS and K8s filters are not supported
   - Uptime
     - Uptime Monitors
       - Only container over TCP (translated from healthchecks)
 ## Unsupported contexts
-- Observability
-  - Infrastructure
-    - Inventory
-      - AWS
-      - Kubernetes Pods
-  - Uptime
-    - TLS Cerrificates
-    - Synthetics
   - APM
   - User Experience
 
