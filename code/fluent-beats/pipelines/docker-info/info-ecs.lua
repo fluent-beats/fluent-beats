@@ -153,8 +153,7 @@ function health_to_heartbeat(input)
 
   monitor_id = string.sub(input['Id'], 1, 10)
   i, j = string.find(input['Config']['Image'], ":")
-  --image_name = string.sub(input['Config']['Image'], 0, (i ~= nil and i-1 or nil))
-  image_name = string.sub(input['Config']['Image'], 0, i)
+  image_name = string.sub(input['Config']['Image'], 0, (i ~= nil and i-1 or nil))
 
   -- monitor
   output['monitor'] = {}
