@@ -146,15 +146,88 @@ function health_info(input)
   return output
 end
 
+function health_to_heartbeat(input)
+  output = {}
+
+  -- basic TCP heartbeat given https://www.elastic.co/guide/en/beats/heartbeat/8.7
+
+  monitor_id = string.sub(input['Id'], 1, 10)
+  i, j = string.find(input['Config']['Image'], ":")
+  --image_name = string.sub(input['Config']['Image'], 0, (i ~= nil and i-1 or nil))
+  image_name = string.sub(input['Config']['Image'], 0, i)
+
+  -- monitor
+  output['monitor'] = {}
+  output['monitor']['type'] = 'tcp'
+  output['monitor']['name'] = image_name .. '-' .. monitor_id
+  output['monitor']['id'] = 'auto-tcp-' .. monitor_id
+  output['monitor']['status'] = (input['State']['Status'] == 'running' and "up" or "down")
+  output['monitor']['ip'] = (input['NetworkSettings']['IPAddress'] == '' and AGENT_IP or input['NetworkSettings']['IPAddress'])
+  output['monitor']['timespan'] = {}
+  if input['State']['Health'] then
+    lastEvent = #(input['State']['Health']['Log']) - 1
+    output['monitor']['timespan']['gte'] = input['State']['Health']['Log'][lastEvent]['Start']
+    output['monitor']['timespan']['lt'] = input['State']['Health']['Log'][lastEvent]['End']
+  end
+
+  -- state
+  output['state'] = {}
+  output['state']['id'] = 'default-' .. monitor_id
+  output['state']['status'] = output['monitor']['status']
+  if input['State']['Health'] then
+    lastEvent = #(input['State']['Health']['Log']) - 1
+    output['state']['started_at'] = input['State']['Health']['Log'][lastEvent]['Start']
+  end
+
+  -- summary
+  output['summary'] = {}
+  output['summary']['up'] = (input['State']['Status'] == 'running' and 1 or 0)
+  output['summary']['down'] = (input['State']['Status'] ~= 'running' and 1 or 0)
+
+  -- url (uses fake port)
+  output['url'] = {}
+  output['url']['scheme'] = 'tcp'
+  output['url']['domain'] = output['monitor']['ip']
+  output['url']['port'] = 80
+  output['url']['full'] = 'tcp://' .. output['url']['domain'] .. ':80'
+
+  -- agent
+  output['agent'] = {}
+  output['agent']['id'] = AGENT_ID
+  output['agent']['name'] = AGENT_HOST .. '.' .. AGENT_NAME
+  output['agent']['type'] = 'heartbeat'
+
+  -- host
+  output['host'] = {}
+  output['host']['id'] = input['Id']
+  output['host']['hostname'] = input['Config']['Hostname']
+  output['host']['containerized'] = true
+  output['host']['ip'] = {}
+  table.insert(output['host']['ip'], AGENT_IP)
+
+  -- container
+  output['container'] = {}
+  output['container']['image'] = {}
+  output['container']['id'] = input['Id']
+  output['container']['name'] = input['Name']
+  output['container']['runtime'] = 'docker'
+  output['container']['image']['name'] = input['Config']['Image']
+
+  -- ECS
+  add_ecs(input, output)
+
+  return output
+end
+
 function docker_info_to_ecs(tag, timestamp, record)
   -- split record in multiple records
   new_records = {}
 
   table.insert(new_records, container_info(record))
   table.insert(new_records, image_info(record))
-
   -- check piechart 'agent.id' vs 'container.id'
   table.insert(new_records, health_info(record))
+  table.insert(new_records, health_to_heartbeat(record))
 
   return 2, timestamp, new_records
 end

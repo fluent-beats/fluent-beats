@@ -23,18 +23,33 @@
 - Analytics
   - Dashboard
   - Discovery
+  - Canvas
   - etc
 - Observability
-  - Logs
   - Alerts
-  - Infrastructure > Metrics Explorer
-  - Infrastructure > Inventory
+  - Logs
+  - Infrastructure
+    - Metrics Explorer
     - Hosts
-    - Containers
-## Not supported contexts
+## Partially supported contexts
 - Observability
+  - Infrastructure
+    - Inventory
+      - Hosts
+      - Containers
+  - Uptime
+    - Uptime Monitors
+      - Only container over TCP (translated from healthchecks)
+## Unsupported contexts
+- Observability
+  - Infrastructure
+    - Inventory
+      - AWS
+      - Kubernetes Pods
+  - Uptime
+    - TLS Cerrificates
+    - Synthetics
   - APM
-  - Uptime (todo)
   - User Experience
 
 # Design
