@@ -6,6 +6,7 @@ AGENT_NAME = 'fluent-beats'
 AGENT_ID = os.getenv('AGENT_ID')
 AGENT_HOST = os.getenv('AGENT_HOST')
 AGENT_IP = os.getenv('AGENT_IP')
+COLLECT_LABELS = os.getenv('FLB_COLLECT_CONTAINER_LABELS')
 
 function add_ecs(input, output)
   output['ecs'] = {}
@@ -103,13 +104,14 @@ function container_info(input)
     table.insert(output['docker']['container']['ip_addresses'], input['NetworkSettings']['Networks'][k]['IPAddress'])
   end
 
-  -- labels (not useful and usually full of trash)
-  -- if input['Config']['Labels'] then
-  --   output['docker']['container']['labels'] = {}
-  --   for k,v in pairs(input['Config']['Labels']) do
-  --     output['docker']['container']['labels'][k] = v
-  --   end
-  -- end
+  -- labels (usually not so useful and messy)
+  if COLLECT_LABELS == "true" and input['Config']['Labels'] then
+  --if input['Config']['Labels'] then
+    output['docker']['container']['labels'] = {}
+    for k,v in pairs(input['Config']['Labels']) do
+      output['docker']['container']['labels'][k] = v
+    end
+  end
 
   -- container size
   output['docker']['container']['size'] = {}
@@ -222,7 +224,6 @@ function docker_info_to_ecs(tag, timestamp, record)
 
   table.insert(new_records, container_info(record))
   table.insert(new_records, image_info(record))
-  -- check piechart 'agent.id' vs 'container.id'
   table.insert(new_records, health_info(record))
   table.insert(new_records, health_to_heartbeat(record))
 

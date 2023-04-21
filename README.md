@@ -81,6 +81,7 @@ The supported variables are:
  FLB_FORWARD_BUF_MAX_SIZE      | Memory limit for a message received by `forward` input plugin                                  | 3M
  FLB_STORAGE_BACKLOG_MEM_LIMIT | Memory limit for backlog (unprocessed data) processing                                         | 10M
  FLB_HOST_NET_INTERFACE        | Name of the host network interface to monitor                                                  | eth0
+ FLB_COLLECT_CONTAINER_LABELS  | Enable Docker container labels collection                                                      | false
 
 ## Provided pipelines
 

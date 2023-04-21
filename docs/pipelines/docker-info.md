@@ -43,7 +43,7 @@ Docker data stream that collects info about containers.
  service.address               | Address where data about this service was collected from. This should be a URI, network address (ipv4:port or [ipv6]:port) or a resource path (sockets).                                                                                                                     | keyword          |
  service.type                  | The type of the service data is collected from. The type can be used to group and correlate logs and metrics from one service type. Example: If logs or metrics are collected from Elasticsearch, service.type would be elasticsearch.                                                 | keyword          |
 
-> docker.container.labels.* are disabled in the script
+> docker.container.labels.* must be enabled using `FLB_COLLECT_CONTAINER_LABELS=true`
 
 ---
 
