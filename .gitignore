@@ -2,6 +2,11 @@
 **/plugins/*
 !**/plugins/.empty
 
-# Secrets
+# Test Secrets
 **/secrets/*
 !**/secrets/.empty
+
+# Test Configs
+**/configs/*
+!**/configs/.empty
+
