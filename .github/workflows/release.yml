@@ -35,8 +35,8 @@ jobs:
 
       - name: Download plugins
         run: |
-            chmod +x ./github/download_plugins.sh
-            ./github/download_plugins.sh
+            chmod +x ./.github/download_plugins.sh
+            ./.github/download_plugins.sh
         shell: bash
 
       - name: Build and Push
