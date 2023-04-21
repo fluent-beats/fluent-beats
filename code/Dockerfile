@@ -93,7 +93,7 @@ RUN             cmake \
                       -DFLB_FILTER_NEST=Off \
                       #-DFLB_FILTER_PARSER=On \
                       -DFLB_FILTER_RECORD_MODIFIER=Off \
-                      -DFLB_FILTER_REWRITE_TAG=Off \
+                      #-DFLB_FILTER_REWRITE_TAG=On \
                       -DFLB_FILTER_STDOUT=Off \
                       -DFLB_FILTER_THROTTLE=Off \
                       -DFLB_FILTER_THROTTLE_SIZE=Off \
