@@ -28,6 +28,7 @@ services:
         target: /run/configs/fluent-beats.env
     deploy:
       resources:
+          # just examples, not written in stone
           limits:
             cpus: '0.5'
             memory: 50M
