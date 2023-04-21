@@ -24,7 +24,7 @@ jobs:
           images: |
             name=${{ env.DOCKER_REGISTRY }}/${{ github.repository }}
           tags: |
-            type=sha,format=long,prefix=
+            type=semver,pattern={{version}}
 
       - name: Registry Login
         uses: docker/login-action@v2
