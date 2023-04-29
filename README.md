@@ -47,7 +47,7 @@
 
 <img src="./docs/img/fluent-beats.jpg" style="max-width: 100%">
 
-This service is designed to provide ligthweight observability capababilities for microservices running as Docker containers.
+This service is designed to provide lightweight observability capababilities for microservices running as Docker containers.
 
 Its was designed to be deployed as a [Docker Swarm Global Service](https://docs.docker.com/engine/swarm/services/#replicated-or-global-services); or [AWS ECS equivalent](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html#service_scheduler_daemon); in order to receive any type of observability information from other services.
 
