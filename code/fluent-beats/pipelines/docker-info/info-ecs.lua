@@ -164,12 +164,6 @@ function health_to_heartbeat(input)
   output['monitor']['id'] = 'auto-tcp-' .. monitor_id
   output['monitor']['status'] = (input['State']['Status'] == 'running' and "up" or "down")
   output['monitor']['ip'] = (input['NetworkSettings']['IPAddress'] == '' and AGENT_IP or input['NetworkSettings']['IPAddress'])
-  output['monitor']['timespan'] = {}
-  if input['State']['Health'] then
-    lastEvent = #(input['State']['Health']['Log']) - 1
-    output['monitor']['timespan']['gte'] = input['State']['Health']['Log'][lastEvent]['Start']
-    output['monitor']['timespan']['lt'] = input['State']['Health']['Log'][lastEvent]['End']
-  end
 
   -- state
   output['state'] = {}
