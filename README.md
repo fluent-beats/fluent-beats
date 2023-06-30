@@ -87,13 +87,13 @@ The supported variables are:
 
 ## Provided pipelines
 
-- [Docker Logs](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-logs.md)
+- [APM](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/apm.md)
 - [Docker Container Info](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-info.md)
 - [Docker Container Stats](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-stats.md)
+- [Docker Container Uptime](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-uptime.md)
+- [Docker Logs](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-logs.md)
 - [Docker System](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-system.md)
-  - [Docker Container Uptime](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-uptime.md)
 - [Host Metrics](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/host.md)
-- [APM](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/apm.md)
 
 ## Provided dashboards
 
