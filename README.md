@@ -91,6 +91,7 @@ The supported variables are:
 - [Docker Container Info](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-info.md)
 - [Docker Container Stats](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-stats.md)
 - [Docker System](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-system.md)
+  - [Docker Container Uptime](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/docker-uptime.md)
 - [Host Metrics](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/host.md)
 - [APM](https://github.com/fluent-beats/fluent-beats/blob/master/docs/pipelines/apm.md)
 
@@ -101,8 +102,10 @@ The project provides some Kibana dashboards, equivalent to the original ones pro
 - [Details about provided dashboards](https://github.com/fluent-beats/fluent-beats/blob/master/assets/README.md)
 
 
-## Testing locally
+## Running locally
 
+
+### Local test
 The project contains a test stack, it requires properly configuration of Elasticsearch secrets by creating 2 files.
 
 - `/test/secrets/http_host.txt`: contains the ES hostname
@@ -111,7 +114,24 @@ The project contains a test stack, it requires properly configuration of Elastic
 Once configured the test stack can be started:
 
 ``` bash
-docker-compose -f docker-compose-test.yml up
+./test.sh
+```
+
+### Local build
+
+To build `Fluent-Beats`, run:
+
+``` bash
+./build.sh
+```
+
+### Pull and inspect
+
+You can optionally dive into a `Fluent-Beats` container using:
+
+``` bash
+docker pull ghcr.io/fluent-beats/fluent-beats:latest
+docker run --rm -ti --entrypoint sh ghcr.io/fluent-beats/fluent-beats
 ```
 
 ## Notes about Fluent Bit
@@ -125,6 +145,4 @@ docker-compose -f docker-compose-test.yml up
 ## Logo copyright
 
 `Fluent Beats` logo was adapted from [hati-royani hummingbird icon logo](https://www.vecteezy.com/vector-art/604578-hummingbird-icon-logo-and-symbols-template-vector)
-
-
 
