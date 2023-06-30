@@ -1,7 +1,7 @@
 # Components
 
-- pipeline-system.conf
-- system-ecs.lua
+- pipeline-info.conf
+- info-ecs.lua
 
 # Target Datastream
 
