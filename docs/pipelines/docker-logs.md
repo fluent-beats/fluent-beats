@@ -3,7 +3,7 @@
 - pipeline-logs.conf
 - logs-ecs.lua
 
-# Target Datastream
+# Target Data Stream
 
 **metrics-docker.logs-default**
 

@@ -3,7 +3,7 @@
 - pipeline-stats.conf
 - stats-ecs.lua
 
-# Target Datastream
+# Target Data Stream
 
 **metrics-docker.stats-default**
 

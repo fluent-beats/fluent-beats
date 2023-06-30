@@ -3,7 +3,7 @@
 - pipeline-apm.conf
 - apm-ecs.lua
 
-# Target Datastream
+# Target Data Stream
 
 **metrics-apm.stats-default**
 

@@ -3,7 +3,7 @@
 - pipeline-info.conf
 - info-ecs.lua
 
-# Target Datastream
+# Target Data Stream
 
 **metrics-docker.info-default**
 

@@ -3,7 +3,7 @@
 - pipeline-host.conf
 - host-ecs.lua
 
-# Target Datastream
+# Target Data Stream
 
 **metrics-host.stats-default**
 

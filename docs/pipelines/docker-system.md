@@ -3,7 +3,7 @@
 - pipeline-system.conf
 - system-ecs.lua
 
-# Target Datastream
+# Target Data Stream
 
 **metrics-docker.system-default**
 
