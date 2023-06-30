@@ -3,6 +3,10 @@
 - pipeline-logs.conf
 - logs-ecs.lua
 
+# Target Datastream
+
+**metrics-docker.logs-default**
+
 # Configurations
 
 The logs pipeline relies on `FluentD Foward protocol` used to receive logs from Docker containers.

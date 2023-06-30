@@ -3,6 +3,10 @@
 - pipeline-stats.conf
 - stats-ecs.lua
 
+# Target Datastream
+
+**metrics-docker.stats-default**
+
 # Metricsets
 
 ## CPU

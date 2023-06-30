@@ -3,6 +3,10 @@
 - pipeline-info.conf
 - info-ecs.lua
 
+# Target Datastream
+
+**metrics-docker.info-default**
+
 # Metricsets
 
 ## Container

@@ -3,6 +3,10 @@
 - pipeline-host.conf
 - host-ecs.lua
 
+# Target Datastream
+
+**metrics-host.stats-default**
+
 # Metricsets
 
 ## CPU

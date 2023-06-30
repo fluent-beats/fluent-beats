@@ -3,6 +3,10 @@
 - pipeline-apm.conf
 - apm-ecs.lua
 
+# Target Datastream
+
+**metrics-apm.stats-default**
+
 # Configurations
 
 The APM metrics relies on `statsd` datagrams, sent to Fluent Beats by external application.
