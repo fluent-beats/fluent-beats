@@ -5,7 +5,7 @@
 
 # Target Data Stream
 
-**synthetics-tcp-default**
+**heartbeat-8-default**
 
 # Configurations
 
