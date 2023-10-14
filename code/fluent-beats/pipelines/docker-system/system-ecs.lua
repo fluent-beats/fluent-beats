@@ -91,6 +91,7 @@ function system_info(input)
 
   -- ECS fields
   add_common(input, output, 'info')
+
   return output
 end
 

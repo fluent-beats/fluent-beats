@@ -78,6 +78,7 @@ function delta_cpu_for(cpus_count, delta, cpu_delta)
   if delta <= 0 or cpu_delta == 0 then
     return 0
   end
+
   return (cpus_count * delta) / cpu_delta
 end
 
