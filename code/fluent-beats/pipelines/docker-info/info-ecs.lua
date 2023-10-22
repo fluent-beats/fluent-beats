@@ -75,6 +75,54 @@ function add_common(input, output, info)
   add_container(input, output)
 end
 
+function uptime_ecs(input, output)
+  add_ecs(input, output)
+
+  -- agent
+  output['agent'] = output['agent'] or {}
+  output['agent']['id'] = AGENT_ID
+  output['agent']['name'] = AGENT_HOST .. '.' .. AGENT_NAME
+  output['agent']['type'] = 'heartbeat'
+
+  -- container
+  output['container'] = output['container'] or {}
+  output['container']['image'] = {}
+  output['container']['id'] = input['Id']
+  output['container']['name'] = input['Name']
+  output['container']['runtime'] = 'docker'
+  output['container']['image']['name'] = input['Config']['Image']
+
+  -- host
+  output['host'] = output['host'] or {}
+  output['host']['id'] = input['Id']
+  output['host']['hostname'] = input['Config']['Hostname']
+  output['host']['ip'] = {}
+  table.insert(output['host']['ip'], AGENT_IP)
+
+  -- url (uses fake port)
+  output['url'] = output['url'] or {}
+  output['url']['scheme'] = output['monitor']['type']
+  output['url']['domain'] = output['monitor']['ip']
+  output['url']['port'] = output['tcp']['port']
+  output['url']['full'] = 'tcp://' .. output['url']['domain'] .. ':' .. output['url']['port']
+end
+
+function parse_docker_log_date(log_date)
+  -- https://docs.docker.com/engine/reference/commandline/logs/
+
+  pattern = "(%d+)%-(%d+)%-(%d+)T(%d+):(%d+):(%d+).(%d+)"
+
+  xyear, xmonth, xday, xhour, xminute, xseconds, xnanos = log_date:match(pattern)
+  epoch_seconds = os.time({year = xyear, month = xmonth, day = xday, hour = xhour, min = xminute, sec = xseconds})
+  epoch_nanos = epoch_seconds * 1000 * 1000 * 1000
+
+  return math.floor(epoch_nanos + xnanos)
+end
+
+function us_between_ns(end_nanos, start_nanos)
+  return math.floor(end_nanos / 1000 - start_nanos / 1000)
+end
+
 function image_info(input)
   output = {}
 
@@ -85,6 +133,7 @@ function image_info(input)
 
   -- ECS fields
   add_common(input, output, 'image')
+
   return output
 end
 
@@ -120,6 +169,7 @@ function container_info(input)
 
   -- ECS fields
   add_common(input, output, 'container')
+
   return output
 end
 
@@ -145,69 +195,59 @@ function health_info(input)
 
   -- ECS fields
   add_common(input, output, 'healthcheck')
+
   return output
 end
 
 function health_to_heartbeat(input)
   output = {}
 
-  -- basic TCP heartbeat given https://www.elastic.co/guide/en/beats/heartbeat/8.7
-
-  monitor_id = string.sub(input['Id'], 1, 10)
-  i, j = string.find(input['Config']['Image'], ":")
-  image_name = string.sub(input['Config']['Image'], 0, (i ~= nil and i-1 or nil))
-
+  name = string.gsub(input['Name'], "^/", "")
+  -- Beats fields https://www.elastic.co/guide/en/beats/heartbeat/current
   -- monitor
   output['monitor'] = {}
   output['monitor']['type'] = 'tcp'
-  output['monitor']['name'] = image_name .. '-' .. monitor_id
-  output['monitor']['id'] = 'auto-tcp-' .. monitor_id
+  output['monitor']['name'] = name
+  output['monitor']['id'] = 'auto-tcp-' .. name
   output['monitor']['status'] = (input['State']['Status'] == 'running' and "up" or "down")
   output['monitor']['ip'] = (input['NetworkSettings']['IPAddress'] == '' and AGENT_IP or input['NetworkSettings']['IPAddress'])
 
-  -- state
+  -- monitor duration
+  output['monitor']['duration'] = {}
+  if input['State']['Health'] then
+    lastEvent = #(input['State']['Health']['Log']) - 1
+    start_at = input['State']['Health']['Log'][lastEvent]['Start']
+    end_at = input['State']['Health']['Log'][lastEvent]['End']
+    output['monitor']['duration']['us'] = us_between_ns(parse_docker_log_date(end_at), parse_docker_log_date(start_at))
+  else
+    output['monitor']['duration']['us'] = 1000
+  end
+
+  -- monitor state
   output['state'] = {}
   output['state']['status'] = output['monitor']['status']
   output['state']['up'] = (output['monitor']['status'] == 'up' and 1 or 0)
   output['state']['down'] = (output['monitor']['status'] ~= 'up' and 1 or 0)
-  output['state']['id'] = 'default-' .. monitor_id
+  output['state']['id'] = 'default-' .. name
 
-  -- summary
+  -- monitor summary
   output['summary'] = {}
   output['summary']['up'] = output['state']['up']
   output['summary']['down'] = output['state']['down']
 
-  -- url (uses fake port)
-  output['url'] = {}
-  output['url']['scheme'] = 'tcp'
-  output['url']['domain'] = output['monitor']['ip']
-  output['url']['port'] = 80
-  output['url']['full'] = 'tcp://' .. output['url']['domain'] .. ':80'
-
-  -- agent
-  output['agent'] = {}
-  output['agent']['id'] = AGENT_ID
-  output['agent']['name'] = AGENT_HOST .. '.' .. AGENT_NAME
-  output['agent']['type'] = 'heartbeat'
+  -- apm service
+  output['name'] = name
 
   -- host
   output['host'] = {}
-  output['host']['id'] = input['Id']
-  output['host']['hostname'] = input['Config']['Hostname']
   output['host']['containerized'] = true
-  output['host']['ip'] = {}
-  table.insert(output['host']['ip'], AGENT_IP)
 
-  -- container
-  output['container'] = {}
-  output['container']['image'] = {}
-  output['container']['id'] = input['Id']
-  output['container']['name'] = input['Name']
-  output['container']['runtime'] = 'docker'
-  output['container']['image']['name'] = input['Config']['Image']
+  -- tcp
+  output['tcp'] = {}
+  output['tcp']['port'] = 80
 
-  -- ECS
-  add_ecs(input, output)
+  -- ECS fields
+  uptime_ecs(input, output)
 
   return output
 end
