@@ -96,9 +96,12 @@ function system_info(input)
 end
 
 function docker_system_to_ecs(tag, timestamp, record)
-  -- split record in multiple records
   new_records = {}
 
+  -- delete "/ namespace" from container`s name, because FluentBeats only access local Docker daemon
+  record['Name'] = string.gsub(record['Name'], "^/", "")
+
+  -- split record in multiple records
   table.insert(new_records, system_info(record))
 
   return 2, timestamp, new_records
