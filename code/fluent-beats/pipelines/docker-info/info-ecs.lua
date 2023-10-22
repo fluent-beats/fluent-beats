@@ -202,13 +202,12 @@ end
 function health_to_heartbeat(input)
   output = {}
 
-  name = string.gsub(input['Name'], "^/", "")
   -- Beats fields https://www.elastic.co/guide/en/beats/heartbeat/current
   -- monitor
   output['monitor'] = {}
   output['monitor']['type'] = 'tcp'
-  output['monitor']['name'] = name
-  output['monitor']['id'] = 'auto-tcp-' .. name
+  output['monitor']['name'] = input['Name']
+  output['monitor']['id'] = 'auto-tcp-' .. input['Name']
   output['monitor']['status'] = (input['State']['Status'] == 'running' and "up" or "down")
   output['monitor']['ip'] = (input['NetworkSettings']['IPAddress'] == '' and AGENT_IP or input['NetworkSettings']['IPAddress'])
 
@@ -228,7 +227,7 @@ function health_to_heartbeat(input)
   output['state']['status'] = output['monitor']['status']
   output['state']['up'] = (output['monitor']['status'] == 'up' and 1 or 0)
   output['state']['down'] = (output['monitor']['status'] ~= 'up' and 1 or 0)
-  output['state']['id'] = 'default-' .. name
+  output['state']['id'] = 'default-' .. input['Name']
 
   -- monitor summary
   output['summary'] = {}
@@ -236,7 +235,7 @@ function health_to_heartbeat(input)
   output['summary']['down'] = output['state']['down']
 
   -- apm service
-  output['name'] = name
+  output['name'] = input['Name']
 
   -- host
   output['host'] = {}
@@ -253,9 +252,12 @@ function health_to_heartbeat(input)
 end
 
 function docker_info_to_ecs(tag, timestamp, record)
-  -- split record in multiple records
   new_records = {}
 
+  -- delete "/ namespace" from container`s name, because FluentBeats only access local Docker daemon
+  record['Name'] = string.gsub(record['Name'], "^/", "")
+
+  -- split record in multiple records
   table.insert(new_records, container_info(record))
   table.insert(new_records, image_info(record))
   table.insert(new_records, health_info(record))

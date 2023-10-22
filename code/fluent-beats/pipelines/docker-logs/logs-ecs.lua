@@ -90,6 +90,9 @@ end
 function fluentd_to_ecs(tag, timestamp, record)
   new_record = {}
 
+  -- delete "/ namespace" from container`s name, because FluentBeats only access local Docker daemon
+  record['container_name'] = string.gsub(record['container_name'], "^/", "")
+
   -- https://www.elastic.co/guide/en/observability/8.2/logs-app-fields.html
   add_log(record, new_record)
 

@@ -324,20 +324,19 @@ function network_stats(input)
 end
 
 function docker_stats_to_ecs(tag, timestamp, record)
-  -- split record in multiple records
   new_records = {}
-  code = 0
+
+  -- delete "/ namespace" from container`s name, because FluentBeats only access local Docker daemon
+  record['name'] = string.gsub(record['name'], "^/", "")
 
   -- skip if container is not running
   if record['pids_stats']['current'] then
+    -- split record in multiple records
     table.insert(new_records, cpu_stats(record))
     table.insert(new_records, memory_stats(record))
     table.insert(new_records, disk_stats(record))
     table.insert(new_records, network_stats(record))
-    code = 2
-  else
-    code = -1
+    return 2, timestamp, new_records
   end
-
-  return code, timestamp, new_records
+  return -1, timestamp, new_records
 end
