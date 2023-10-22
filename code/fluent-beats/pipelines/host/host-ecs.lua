@@ -108,10 +108,15 @@ function disk_to_ecs(input, output)
 
   --read
   output['system']['diskio']['read'] = {}
-  output['system']['diskio']['read']['bytes'] = input['read_size']
+  output['system']['diskio']['read']['bytes'] = input['read_bytes']
+  output['system']['diskio']['read']['count'] = input['read_count']
+  output['system']['diskio']['read']['time'] = input['read_time']
 
+  --write
   output['system']['diskio']['write'] = {}
-  output['system']['diskio']['write']['bytes'] = input['write_size']
+  output['system']['diskio']['write']['bytes'] = input['write_bytes']
+  output['system']['diskio']['write']['count'] = input['write_count']
+  output['system']['diskio']['write']['time'] = input['write_time']
 
   add_common(input, output, 'disk')
 end
@@ -186,7 +191,7 @@ function load_to_ecs(input, output)
 end
 
 function host_metric_to_ecs(tag, timestamp, record)
-  new_record = {}
+  local new_record = {}
 
   -- https://www.elastic.co/guide/en/observability/current/host-metrics.html
   if tag == 'host_cpu' then
@@ -200,5 +205,6 @@ function host_metric_to_ecs(tag, timestamp, record)
   elseif tag == 'host_load' then
     load_to_ecs(record, new_record)
   end
+
   return 2, timestamp, new_record
 end

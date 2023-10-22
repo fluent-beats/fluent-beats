@@ -67,15 +67,15 @@ function add_common(input, output, info)
 end
 
 function add_log(input, output)
+  local ignore = { ['container_id']=true, ['container_name']=true, ['message']=true, ['@timestamp']=true }
   output['labels'] = {}
   output['log'] = {}
-  ignore = { ['container_id']=true, ['container_name']=true, ['message']=true, ['@timestamp']=true }
 
   for k,v in pairs(input) do
-    i = string.find(k, "flb_", 1, true)
+    local i = string.find(k, "flb_", 1, true)
     if i then
       -- log label
-      nk = string.sub(k, i + string.len("flb_"))
+      local nk = string.sub(k, i + string.len("flb_"))
       output['labels'][nk] = v
     elseif not ignore[k] then
       -- log property
@@ -88,7 +88,7 @@ function add_log(input, output)
 end
 
 function fluentd_to_ecs(tag, timestamp, record)
-  new_record = {}
+  local new_record = {}
 
   -- delete "/ namespace" from container`s name, because FluentBeats only access local Docker daemon
   record['container_name'] = string.gsub(record['container_name'], "^/", "")

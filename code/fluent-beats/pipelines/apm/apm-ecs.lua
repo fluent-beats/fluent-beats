@@ -75,8 +75,8 @@ function add_labels(input, output)
 
   -- Split key=value and map
   for i=1, #input['tags'] do
-    pair = input['tags'][i]
-    k = string.sub(pair, 1, string.find(pair, "=", 1, true) - 1)
+    local pair = input['tags'][i]
+    local k = string.sub(pair, 1, string.find(pair, "=", 1, true) - 1)
     output['labels'][k] = string.sub(pair, string.len(k) + 2)
   end
 end
@@ -85,7 +85,7 @@ function add_stats(input, output)
   output['stats'] = {}
 
   -- raw (for alerts)
-  bucket = input['bucket']
+  local bucket = input['bucket']
   output['stats'][bucket] = input['value']
 
   -- components (for search / dashboards)
@@ -97,7 +97,7 @@ function add_stats(input, output)
 end
 
 function carbon_to_ecs(tag, timestamp, record)
-  new_record = {}
+  local new_record = {}
 
   -- https://www.elastic.co/guide/en/observability/8.2/metrics-app-fields.html
   add_stats(record, new_record)

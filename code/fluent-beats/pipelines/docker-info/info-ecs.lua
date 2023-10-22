@@ -110,11 +110,10 @@ end
 function parse_docker_log_date(log_date)
   -- https://docs.docker.com/engine/reference/commandline/logs/
 
-  pattern = "(%d+)%-(%d+)%-(%d+)T(%d+):(%d+):(%d+).(%d+)"
-
-  xyear, xmonth, xday, xhour, xminute, xseconds, xnanos = log_date:match(pattern)
-  epoch_seconds = os.time({year = xyear, month = xmonth, day = xday, hour = xhour, min = xminute, sec = xseconds})
-  epoch_nanos = epoch_seconds * 1000 * 1000 * 1000
+  local pattern = "(%d+)%-(%d+)%-(%d+)T(%d+):(%d+):(%d+).(%d+)"
+  local xyear, xmonth, xday, xhour, xminute, xseconds, xnanos = log_date:match(pattern)
+  local epoch_seconds = os.time({year = xyear, month = xmonth, day = xday, hour = xhour, min = xminute, sec = xseconds})
+  local epoch_nanos = epoch_seconds * 1000 * 1000 * 1000
 
   return math.floor(epoch_nanos + xnanos)
 end
@@ -124,7 +123,7 @@ function us_between_ns(end_nanos, start_nanos)
 end
 
 function image_info(input)
-  output = {}
+  local output = {}
 
   -- basic image infos
   output['container'] = {}
@@ -138,7 +137,7 @@ function image_info(input)
 end
 
 function container_info(input)
-  output = {}
+  local output = {}
 
   -- Beats fields
   output['docker'] = {}
@@ -174,7 +173,7 @@ function container_info(input)
 end
 
 function health_info(input)
-  output = {}
+  local output = {}
 
   -- Beats fields
   output['docker'] = {}
@@ -187,7 +186,7 @@ function health_info(input)
 
   -- health details
   if input['State']['Health'] then
-    lastEvent = #(input['State']['Health']['Log']) - 1
+    local lastEvent = #(input['State']['Health']['Log']) - 1
     output['docker']['healthcheck']['event']['output'] = input['State']['Health']['Log'][lastEvent]['Output']
     output['docker']['healthcheck']['event']['exit_code'] = input['State']['Health']['Log'][lastEvent]['ExitCode']
     output['docker']['healthcheck']['failingstreak'] = input['State']['Health']['FailingStreak']
@@ -200,7 +199,7 @@ function health_info(input)
 end
 
 function health_to_heartbeat(input)
-  output = {}
+  local output = {}
 
   -- Beats fields https://www.elastic.co/guide/en/beats/heartbeat/current
   -- monitor
@@ -214,9 +213,9 @@ function health_to_heartbeat(input)
   -- monitor duration
   output['monitor']['duration'] = {}
   if input['State']['Health'] then
-    lastEvent = #(input['State']['Health']['Log']) - 1
-    start_at = input['State']['Health']['Log'][lastEvent]['Start']
-    end_at = input['State']['Health']['Log'][lastEvent]['End']
+    local lastEvent = #(input['State']['Health']['Log']) - 1
+    local start_at = input['State']['Health']['Log'][lastEvent]['Start']
+    local end_at = input['State']['Health']['Log'][lastEvent]['End']
     output['monitor']['duration']['us'] = us_between_ns(parse_docker_log_date(end_at), parse_docker_log_date(start_at))
   else
     output['monitor']['duration']['us'] = 1000
@@ -252,7 +251,7 @@ function health_to_heartbeat(input)
 end
 
 function docker_info_to_ecs(tag, timestamp, record)
-  new_records = {}
+  local new_records = {}
 
   -- delete "/ namespace" from container`s name, because FluentBeats only access local Docker daemon
   record['Name'] = string.gsub(record['Name'], "^/", "")

@@ -96,7 +96,7 @@ function system_info(input)
 end
 
 function docker_system_to_ecs(tag, timestamp, record)
-  new_records = {}
+  local new_records = {}
 
   -- delete "/ namespace" from container`s name, because FluentBeats only access local Docker daemon
   record['Name'] = string.gsub(record['Name'], "^/", "")

@@ -83,13 +83,13 @@ function delta_cpu_for(cpus_count, delta, cpu_delta)
 end
 
 function cpu_usage_percent(input, field, cpus_count, cpu_delta)
-  delta = input['cpu_stats']['cpu_usage'][field] - input['precpu_stats']['cpu_usage'][field]
+  local delta = input['cpu_stats']['cpu_usage'][field] - input['precpu_stats']['cpu_usage'][field]
 
   return delta_cpu_for(cpus_count, delta, cpu_delta)
 end
 
 function cpu_sys_percent(input, cpus_count, cpu_delta)
-  delta = input['cpu_stats']['system_cpu_usage'] - input['precpu_stats']['system_cpu_usage']
+  local delta = input['cpu_stats']['system_cpu_usage'] - input['precpu_stats']['system_cpu_usage']
 
   return delta_cpu_for(cpus_count, delta, cpu_delta)
 end
@@ -123,7 +123,7 @@ function blkio_for(source, dest, input, output)
 end
 
 function cpu_stats(input)
-  output = {}
+  local output = {}
 
   -- Beats fields
   output['docker'] = {}
@@ -132,8 +132,8 @@ function cpu_stats(input)
   if input['cpu_stats'] then
 
     -- values for cpu_percent
-    online_cpus = input['cpu_stats']['online_cpus']
-    cpu_delta = 0
+    local online_cpus = input['cpu_stats']['online_cpus']
+    local cpu_delta = 0
     if input['cpu_stats']['system_cpu_usage'] then
       cpu_delta = input['cpu_stats']['system_cpu_usage'] - input['precpu_stats']['system_cpu_usage']
     end
@@ -192,7 +192,7 @@ function cpu_stats(input)
 end
 
 function memory_stats(input)
-  output = {}
+  local output = {}
 
   -- Beats fields
   output['docker'] = {}
@@ -251,7 +251,7 @@ function memory_stats(input)
 end
 
 function disk_stats(input)
-  output = {}
+  local output = {}
 
   -- Beats fields
   output['docker'] = {}
@@ -279,7 +279,7 @@ function disk_stats(input)
 end
 
 function network_stats(input)
-  output = {}
+  local output = {}
 
   -- Beats fields
   output['docker'] = {}
@@ -324,7 +324,7 @@ function network_stats(input)
 end
 
 function docker_stats_to_ecs(tag, timestamp, record)
-  new_records = {}
+  local new_records = {}
 
   -- delete "/ namespace" from container`s name, because FluentBeats only access local Docker daemon
   record['name'] = string.gsub(record['name'], "^/", "")
