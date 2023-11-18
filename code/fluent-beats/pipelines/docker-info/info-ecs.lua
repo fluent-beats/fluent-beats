@@ -75,6 +75,18 @@ function add_common(input, output, info)
   add_container(input, output)
 end
 
+function json_to_table(json)
+  local data = {}
+
+  for entry in string.gmatch(json, '([^,]+)') do
+    for k,v in string.gmatch(entry, '"(%w+)":([^{:}]+)') do
+      data[k] = v:gsub("%\"", "")
+    end
+  end
+
+  return data
+end
+
 function uptime_ecs(input, output)
   add_ecs(input, output)
 
@@ -233,6 +245,18 @@ function health_to_heartbeat(input)
   output['summary']['up'] = output['state']['up']
   output['summary']['down'] = output['state']['down']
 
+  -- observer
+  output['observer'] = {}
+  output['observer']['name'] = 'geo-' .. input['Name']
+  output['observer']['geo'] = {}
+  output['observer']['geo']['name'] = geo_fields['query']
+  output['observer']['geo']['continent_name'] = geo_fields['continent']
+  output['observer']['geo']['country_iso_code'] = geo_fields['countryCode']
+  output['observer']['geo']['region_iso_code'] = geo_fields['region']
+  output['observer']['geo']['city_name'] = geo_fields['city']
+  output['observer']['geo']['timezone'] = geo_fields['timezone']
+  output['observer']['geo']['location'] = geo_fields['lon'] .. ',' .. geo_fields['lat']
+
   -- apm service
   output['name'] = input['Name']
 
@@ -264,3 +288,6 @@ function docker_info_to_ecs(tag, timestamp, record)
 
   return 2, timestamp, new_records
 end
+
+-- load geo fields
+geo_fields = json_to_table(os.getenv('AGENT_GEO'))

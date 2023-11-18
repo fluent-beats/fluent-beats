@@ -50,6 +50,7 @@ fi
 export AGENT_ID=$(echo $RANDOM | md5sum | head -c 12)
 export AGENT_HOST=$(hostname)
 export AGENT_IP=$(ip route | grep ${FLB_HOST_NET_INTERFACE} | awk '/src/ { print $7 }')
+export AGENT_GEO=$(wget -q -O - http://ip-api.com/json)
 
 # will always match host no matter what (eg --cpuset-cpus=)
 export HOST_NUM_PROCS=$(grep -c processor /proc/cpuinfo)
