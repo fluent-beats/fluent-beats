@@ -1,0 +1,15 @@
+heartbeat.run_from:
+  id: my-custom-geo
+  geo:
+    name: nyc-dc1-rack2
+    location: 40.7128, -74.0060
+    continent_name: North America
+    country_iso_code: US
+    region_name: New York
+    region_iso_code: NY
+    city_name: New York
+
+heartbeat.monitors:
+- type: http
+  urls: ["http://elastic.co"]
+  schedule: "@every 10s"
