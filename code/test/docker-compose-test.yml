@@ -40,7 +40,7 @@ services:
       logging:
         driver: fluentd
         options:
-          #fluentd-async: 'true'
+          fluentd-async: 'true'
           labels-regex: "^flb_.*"
           tag: logs
 
@@ -61,7 +61,7 @@ services:
       logging:
         driver: fluentd
         options:
-          #fluentd-async: 'true'
+          fluentd-async: 'true'
           labels-regex: "^flb_.*"
           tag: logs
 
