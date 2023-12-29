@@ -1,4 +1,4 @@
-echo -e "\033[1m Fluent Beats v1.0\033[0m"
+echo -e "\033[1m Fluent Beats v1.1.0\033[0m"
 echo -e "\033[1;36m * Copyright (C) 2022-2023 Fluent Beats Authors\033[0m"
 echo " * Fluent Beats brings Fluent Bit closer to Elasticsearch"
 echo " * https://fluent-beats.github.io"
