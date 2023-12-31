@@ -126,17 +126,17 @@ function fs_to_ecs(input, output)
   output['system'] = {}
   output['system']['filesystem'] = {}
 
-  output['system']['filesystem']['mount_point'] = input['mount_point']
-  output['system']['filesystem']['total'] = input['total']
-  output['system']['filesystem']['free'] = input['free']
-  output['system']['filesystem']['available'] = input['available']
+  output['system']['filesystem']['mount_point'] = input['mnt']
+  output['system']['filesystem']['total'] = input['f_blocks'] * input['f_bsize']
+  output['system']['filesystem']['free'] = input['f_bfree']  * input['f_bsize']
+  output['system']['filesystem']['available'] = input['f_bavail']  * input['f_bsize']
   output['system']['filesystem']['files'] = input['files']
   output['system']['filesystem']['free_files'] = input['free_files']
 
   output['system']['filesystem']['used'] = {}
-  output['system']['filesystem']['used']['bytes'] = input['total'] - input['available']
+  output['system']['filesystem']['used']['bytes'] = (input['f_blocks'] - input['f_bavail']) * input['f_bsize']
   -- scaled percent (1.0 -> 0.0)
-  output['system']['filesystem']['used']['pct'] = (input['total'] - input['available']) / input['total']
+  output['system']['filesystem']['used']['pct'] = (input['f_blocks'] - input['f_bavail']) / input['f_blocks']
 
   add_common(input, output, 'filesystem')
 end
