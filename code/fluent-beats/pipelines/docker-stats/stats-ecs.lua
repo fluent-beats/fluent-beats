@@ -83,6 +83,7 @@ function delta_cpu_for(cpus_count, delta, cpu_delta)
 end
 
 function cpu_usage_percent(input, field, cpus_count, cpu_delta)
+  -- scaled percent (1.0 -> 0.0)
   local delta = input['cpu_stats']['cpu_usage'][field] - input['precpu_stats']['cpu_usage'][field]
 
   return delta_cpu_for(cpus_count, delta, cpu_delta)
@@ -206,6 +207,7 @@ function memory_stats(input)
     output['docker']['memory']['usage'] = {}
     output['docker']['memory']['usage']['max'] = input['memory_stats']['max_usage']
     output['docker']['memory']['usage']['total'] = input['memory_stats']['usage']
+    -- scaled percent (1.0 -> 0.0)
     output['docker']['memory']['usage']['pct'] = input['memory_stats']['usage'] / input['memory_stats']['limit']
 
     -- failcnt
@@ -229,6 +231,7 @@ function memory_stats(input)
       -- rss
       output['docker']['memory']['rss'] = {}
       output['docker']['memory']['rss']['total'] = input['memory_stats']['stats']['total_rss']
+      -- scaled percent (1.0 -> 0.0)
       output['docker']['memory']['rss']['pct'] = input['memory_stats']['stats']['total_rss'] / input['memory_stats']['limit']
 
       -- extended `docker stats` version (https://docs.docker.com/engine/api/v1.41/#tag/Container/operation/ContainerStats)

@@ -132,14 +132,16 @@ function memory_to_ecs(input, output)
   output['system']['memory']['cached'] = input['mem.cached'] * 1024
   output['system']['memory']['used'] = {}
   output['system']['memory']['used']['bytes'] = input['mem.used'] * 1024
-  output['system']['memory']['used']['pct'] = (input['mem.used'] / input['mem.total']) * 0.01
+  -- scaled percent (1.0 -> 0.0)
+  output['system']['memory']['used']['pct'] = input['mem.used'] / input['mem.total']
 
   -- memory actual
   output['system']['memory']['actual'] = {}
   output['system']['memory']['actual']['free'] = input['mem.available'] * 1024
   output['system']['memory']['actual']['used'] = {}
   output['system']['memory']['actual']['used']['bytes'] = (input['mem.total'] - input['mem.available']) * 1024
-  output['system']['memory']['actual']['used']['pct'] = ((input['mem.total'] - input['mem.available']) / input['mem.total']) * 0.01
+   -- scaled percent (1.0 -> 0.0)
+  output['system']['memory']['actual']['used']['pct'] = (input['mem.total'] - input['mem.available']) / input['mem.total']
 
   add_common(input, output, 'memory')
 end
