@@ -66,6 +66,7 @@ exec /fluent-bit/bin/fluent-bit \
 -e /fluent-bit/bin/flb-in_docker_system.so \
 -e /fluent-bit/bin/flb-in_cpuinfo.so \
 -e /fluent-bit/bin/flb-in_diskinfo.so \
+-e /fluent-bit/bin/flb-in_fsinfo.so \
 -e /fluent-bit/bin/flb-in_meminfo.so \
 -e /fluent-bit/bin/flb-in_netinfo.so \
 -e /fluent-bit/bin/flb-in_load.so

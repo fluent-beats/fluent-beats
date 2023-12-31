@@ -121,6 +121,26 @@ function disk_to_ecs(input, output)
   add_common(input, output, 'disk')
 end
 
+function fs_to_ecs(input, output)
+  -- ECS fields
+  output['system'] = {}
+  output['system']['filesystem'] = {}
+
+  output['system']['filesystem']['mount_point'] = input['mount_point']
+  output['system']['filesystem']['total'] = input['total']
+  output['system']['filesystem']['free'] = input['free']
+  output['system']['filesystem']['available'] = input['available']
+  output['system']['filesystem']['files'] = input['files']
+  output['system']['filesystem']['free_files'] = input['free_files']
+
+  output['system']['filesystem']['used'] = {}
+  output['system']['filesystem']['used']['bytes'] = input['total'] - input['available']
+  -- scaled percent (1.0 -> 0.0)
+  output['system']['filesystem']['used']['pct'] = (input['total'] - input['available']) / input['total']
+
+  add_common(input, output, 'filesystem')
+end
+
 function memory_to_ecs(input, output)
   -- ECS fields
   output['system'] = {}
@@ -200,6 +220,8 @@ function host_metric_to_ecs(tag, timestamp, record)
     cpu_to_ecs(record, new_record)
   elseif tag == 'host_disk' then
     disk_to_ecs(record, new_record)
+  elseif tag == 'host_fs' then
+    fs_to_ecs(record, new_record)
   elseif tag == 'host_memory' then
     memory_to_ecs(record, new_record)
   elseif tag == 'host_netif' then

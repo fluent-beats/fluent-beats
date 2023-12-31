@@ -19,6 +19,7 @@ download_plugins() {
   get_input_plugin 'docker-system' 'docker_system' 'v1.0.0'
   get_input_plugin 'cpuinfo' 'cpuinfo' 'v1.0.1'
   get_input_plugin 'diskinfo' 'diskinfo' 'v1.1.0'
+  get_input_plugin 'fsinfo' 'fsinfo' 'v1.0.0'
   get_input_plugin 'meminfo' 'meminfo' 'v1.1.1'
   get_input_plugin 'netinfo' 'netinfo' 'v1.0.1'
   get_input_plugin 'load' 'load' 'v1.0.0'
