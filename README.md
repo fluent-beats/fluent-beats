@@ -82,6 +82,7 @@ The supported variables are:
  FLB_FORWARD_BUF_CHUNK_SIZE    | Allocation block size used by `forward` input plugin                                           | 1M
  FLB_FORWARD_BUF_MAX_SIZE      | Memory limit for a message received by `forward` input plugin                                  | 3M
  FLB_STORAGE_BACKLOG_MEM_LIMIT | Memory limit for backlog (unprocessed data) processing                                         | 10M
+ FLB_DOCKER_IN_BUF_SIZE        | Size of the buffer used by Docker plugins to fetch data (in bytes or [unit sized](https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/unit-sizes))                                                                                                                   | 30K
  FLB_HOST_NET_INTERFACE        | Name of the host network interface to monitor                                                  | eth0
  FLB_COLLECT_CONTAINER_LABELS  | Enable Docker container labels collection                                                      | false
 
