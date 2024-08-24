@@ -45,6 +45,9 @@ fi
 if [[ ! -n "${FLB_COLLECT_CONTAINER_LABELS}" ]]; then
   export FLB_COLLECT_CONTAINER_LABELS=false
 fi
+if [[ ! -n "${FLB_DOCKER_IN_BUF_SIZE}" ]]; then
+  export FLB_DOCKER_IN_BUF_SIZE=30K
+fi
 
 # setup_agent
 export AGENT_ID=$(echo $RANDOM | md5sum | head -c 12)
