@@ -12,6 +12,16 @@ get_input_plugin() {
   wget https://github.com/fluent-beats/fluent-bit-$1/releases/download/$3/flb-in_$2.so -q -O $file
 }
 
+setup_uptime() {
+  host=$(cat test/secrets/http_host.txt)
+  pwd=$(cat test/secrets/http_pwd.txt)
+
+  curl --user elastic:$pwd \
+  -X PUT "https://$host/_index_template/heartbeat-8-default" \
+  -d "@../assets/uptime/heartbeat-index-template.json" \
+  -H "Content-Type: application/json"
+}
+
 download_plugins() {
   get_input_plugin 'carbon' 'carbon' 'v1.0.0'
   get_input_plugin 'docker-stats' 'docker_stats' 'v1.0.0'
@@ -26,7 +36,7 @@ download_plugins() {
 }
 
 run() {
-  docker-compose -f test/docker-compose-test.yml up
+  docker compose -f test/docker-compose-test.yml up
 }
 
 echo " +++++++++++++++++++++++++++++++++++++++ "
@@ -35,4 +45,4 @@ echo "   http_host.txt -> ElasticSearch host"
 echo "   http_pwd.txt  -> ElasticSearch password"
 echo " +++++++++++++++++++++++++++++++++++++++ "
 
-download_plugins && run
+setup_uptime && download_plugins && run
