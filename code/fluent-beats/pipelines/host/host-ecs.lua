@@ -130,8 +130,8 @@ function fs_to_ecs(input, output)
   output['system']['filesystem']['total'] = input['f_blocks'] * input['f_bsize']
   output['system']['filesystem']['free'] = input['f_bfree']  * input['f_bsize']
   output['system']['filesystem']['available'] = input['f_bavail']  * input['f_bsize']
-  output['system']['filesystem']['files'] = input['files']
-  output['system']['filesystem']['free_files'] = input['free_files']
+  output['system']['filesystem']['files'] = input['f_files']
+  output['system']['filesystem']['free_files'] = input['f_ffree']
 
   output['system']['filesystem']['used'] = {}
   output['system']['filesystem']['used']['bytes'] = (input['f_blocks'] - input['f_bavail']) * input['f_bsize']
@@ -216,6 +216,7 @@ function host_metric_to_ecs(tag, timestamp, record)
   local new_record = {}
 
   -- https://www.elastic.co/guide/en/observability/current/host-metrics.html
+  -- https://www.elastic.co/guide/en/beats/metricbeat/current/exported-fields-system.html
   if tag == 'host_cpu' then
     cpu_to_ecs(record, new_record)
   elseif tag == 'host_disk' then
