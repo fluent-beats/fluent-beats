@@ -1,6 +1,6 @@
 -- Translates Host Metrics to Elastic ECS Event
 
-MODULE_NAME = 'host'
+MODULE_NAME = 'system'
 ECS_VERSION = "8.0.0"
 AGENT_NAME = 'fluent-beats'
 AGENT_ID = os.getenv('AGENT_ID')
